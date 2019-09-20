@@ -1,0 +1,35 @@
+image: node:10
+
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+    - node_modules
+
+stages:
+  - prepare
+  - test
+  - build
+
+npm-install:
+  stage: prepare
+  script:
+    - npm install
+
+# lint:
+#   stage: test
+#   script:
+#     - npm run lint
+
+
+## Build
+build-browser-development:
+  stage: test
+  script:
+    - npm run test
+
+build-browser-staging:
+  stage: test
+  script:
+    - npm run coverage
+
+
