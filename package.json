@@ -1,0 +1,32 @@
+{
+  "name": "crayon-types-validator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --require ts-node/register --colors test/specs/**/*.ts",
+    "dev": "ts-node src/index.ts",
+    "coverage": "nyc npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.l.twogate.net:fanapp/crayon-types-validator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "camelcase": "^5.3.1",
+    "crayon-types": "git+ssh://git@git.l.twogate.net:fanapp/crayon-types.git",
+    "ts-morph": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.3",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.5",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
+  }
+}
