@@ -11,7 +11,7 @@ export class ObjectPath {
     this.data = data
   }
 
-  traverse (path: string) {
+  public traverse (path: string) {
     if (path === '.') {
       return this.data
     }

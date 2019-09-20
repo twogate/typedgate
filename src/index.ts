@@ -1,13 +1,7 @@
 import { Project, StructureKind } from "ts-morph";
-//import { AppConfigJSON } from './app-config.json'
 import { loadJson } from './file-utils'
 
 import { InterfaceDefinition } from './interface-definition'
-
-
-
-
-
 
 loadJson('./test/fixtures/app-config.json').then((data) => {
   if (typeof data !== 'object' && data === null) {

@@ -6,7 +6,9 @@
   "scripts": {
     "test": "mocha --require ts-node/register --colors test/unit/**/*.ts",
     "dev": "ts-node src/index.ts",
-    "coverage": "nyc npm run test"
+    "coverage": "nyc npm run test",
+    "lint": "tslint --format stylish 'src/**/*.ts{,x}'",
+    "tslint-check": "tslint-config-prettier-check ./tslint.json"
   },
   "repository": {
     "type": "git",
@@ -24,7 +26,10 @@
     "chai": "^4.2.0",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
+    "prettier": "1.18.2",
     "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.6.3"
   }
 }

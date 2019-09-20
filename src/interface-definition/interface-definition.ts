@@ -1,39 +1,24 @@
 import { Project, ProjectOptions, SourceFile } from "ts-morph";
-import { ControlComment } from './control-comment'
-import { ObjectPath } from './object-path'
+import { ControlComment } from '../control-comment'
+import { ObjectPath } from '../object-path'
+import { InterfaceDefinitionError } from './interface-definition-error'
 
-interface InterfaceDefinitionArgument {
+interface IInterfaceDefinitionArgument {
   project: ProjectOptions,
   sourceFilePath: string
 }
 
-export class InterfaceDefinitionError extends Error {
-  public name = 'InterfaceDefinitionError';
-
-  constructor(
-    public message: string,
-    public interfaceSourcePath: string,
-    public interfacePos: number
-  ) {
-    super(message)
-  }
-
-  toString() {
-    return `${this.name}: ${this.message} at ${this.interfaceSourcePath}, position ${this.interfacePos}`
-  }
-}
-
 export class InterfaceDefinition {
-  sourceFile: SourceFile
+  private sourceFile: SourceFile
 
-  constructor(opts: InterfaceDefinitionArgument) {
+  constructor(opts: IInterfaceDefinitionArgument) {
     const project = new Project({
       tsConfigFilePath: opts.project.tsConfigFilePath
     });
     this.sourceFile = project.getSourceFileOrThrow(opts.sourceFilePath);
   }
 
-  scanFiles(validateTargetObj: any) {
+  public scanFiles(validateTargetObj: any) {
     for (const [name, declarations] of this.sourceFile.getExportedDeclarations()) {
       declarations.map((d) => {
         d.getLeadingCommentRanges().map((c) => {
