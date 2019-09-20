@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require ts-node/register --colors test/specs/**/*.ts",
+    "test": "mocha --require ts-node/register --colors test/unit/**/*.ts",
     "dev": "ts-node src/index.ts",
     "coverage": "nyc npm run test"
   },
@@ -15,8 +15,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "camelcase": "^5.3.1",
-    "crayon-types": "git+ssh://git@git.l.twogate.net:fanapp/crayon-types.git",
     "ts-morph": "^4.0.1"
   },
   "devDependencies": {

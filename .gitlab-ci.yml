@@ -22,12 +22,12 @@ npm-install:
 
 
 ## Build
-build-browser-development:
+test:
   stage: test
   script:
     - npm run test
 
-build-browser-staging:
+coverage:
   stage: test
   script:
     - npm run coverage
