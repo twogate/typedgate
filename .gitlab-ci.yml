@@ -20,16 +20,13 @@ npm-install:
 #   script:
 #     - npm run lint
 
-
-## Build
-test:
-  stage: test
-  script:
-    - npm run test
+# converage だけでテストもするようなのでコメントアウト
+# test:
+#   stage: test
+#   script:
+#     - npm run test
 
 coverage:
   stage: test
   script:
     - npm run coverage
-
-
