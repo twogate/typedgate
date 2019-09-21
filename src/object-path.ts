@@ -4,28 +4,33 @@
  */
 
 export class ObjectPath {
-  public data: any = null
   private arrayRex = new RegExp(/(.+)\[(\d+)\]$/)
 
-  constructor (data: any) {
-    this.data = data
-  }
+  constructor (public path: string) { }
 
-  public traverse (path: string) {
+  public traverse (data: any) {
+    let path = this.path
     if (path === '.') {
-      return this.data
+      return data
     }
     if (path[0] === '.') {
-      path = path.substr(1)
+      path = this.path.substr(1)
     }
 
-    return path.split('.').reduce((previous, current) => {
-      const arrRex = current.match(this.arrayRex)
+    return this.toArray().reduce((previous, current) => previous[current], data)
+  }
+
+  public toArray() {
+    const splited = this.path.split('.')
+    const res = splited.reduce((acc: Array<string|number>, r) => {
+      const arrRex = r.match(this.arrayRex)
       if (arrRex) {
-        return previous[arrRex[1]][arrRex[2]]
+        acc = acc.concat([arrRex[1], parseInt(arrRex[2],10)])
       } else {
-        return previous[current]
+        acc.push(r)
       }
-    }, this.data);
+      return acc
+    }, [] as Array<string|number>)
+    return res.slice(1)
   }
 }

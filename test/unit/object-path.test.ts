@@ -18,6 +18,15 @@ const fixtureObj = {
           },
           {
             level4_2: {
+              l4arr: [
+                1,
+                [
+                  4,
+                  5,
+                  6
+                ],
+                3
+              ],
               l4prop1: true,
               l4prop2: 'yeah',
               l4prop3: 123,
@@ -38,20 +47,35 @@ const fixtureObj = {
   l0prop3: 123
 }
 
-describe('object-path', () => {
-  const op = new ObjectPath(fixtureObj)
+describe('object-path traverse', () => {
   it('root', () => {
-    expect(op.traverse('.')).to.deep.equal(fixtureObj)
+    const op = new ObjectPath('.')
+    expect(op.traverse(fixtureObj)).to.deep.equal(fixtureObj)
   })
   it('root property', () => {
-    expect(op.traverse('.l0prop1')).to.be.true
+    const op = new ObjectPath('.l0prop1')
+    expect(op.traverse(fixtureObj)).to.be.true
   })
   it('level3 array', () => {
-    expect(op.traverse('.level1.level2.level3.l3arr')).to.deep.equal(fixtureObj.level1.level2.level3.l3arr)
+    const op = new ObjectPath('.level1.level2.level3.l3arr')
+    expect(op.traverse(fixtureObj)).to.deep.equal(fixtureObj.level1.level2.level3.l3arr)
   })
-  it('level3 array, 2nd element', () => {
-    expect(op.traverse('.level1.level2.level3.l3arr[1]')).to.deep.equal(fixtureObj.level1.level2.level3.l3arr[1])
+  it('level3 array, 1st element', () => {
+    const op = new ObjectPath('.level1.level2.level3.l3arr[0]')
+    expect(op.traverse(fixtureObj)).to.deep.equal(fixtureObj.level1.level2.level3.l3arr[0])
+  })
+  it('level4 array, 3rd element', () => {
+    if (!fixtureObj.level1.level2.level3.l3arr[1].level4_2) { return }
+    const op = new ObjectPath('.level1.level2.level3.l3arr[1].level4_2.l4arr[2]')
+    expect(op.traverse(fixtureObj)).to.deep.equal(fixtureObj.level1.level2.level3.l3arr[1].level4_2.l4arr[2])
   })
 })
 
+describe('object-path toArray', () => {
+  it('root', () => {
+    if (!fixtureObj.level1.level2.level3.l3arr[1].level4_2) { return }
+    const op = new ObjectPath('.level1.level2.level3.l3arr[1].level4_2.l4arr[2]')
+    expect(op.toArray()).to.deep.equal(['level1','level2','level3','l3arr',1,'level4_2','l4arr',2])
+  })
+})
 

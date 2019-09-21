@@ -18,8 +18,9 @@ describe('interface-definition', () => {
         tsConfigFilePath: "./test/fixtures/bad-types/tsconfig.json"
       },
       sourceFilePath: "./test/fixtures/bad-types/badtype1.ts",
+      targetData: jsonData
     })
-    expect(() => interfaceDefinition.scanFiles(jsonData)).to.throw(InterfaceDefinitionError)
+    expect(() => interfaceDefinition.buildComparisonTree()).to.throw(InterfaceDefinitionError)
   })
   it('badtype2', () => {
     const interfaceDefinition = new InterfaceDefinition({
@@ -27,8 +28,9 @@ describe('interface-definition', () => {
         tsConfigFilePath: "./test/fixtures/bad-types/tsconfig.json"
       },
       sourceFilePath: "./test/fixtures/bad-types/badtype2.ts",
+      targetData: jsonData
     })
-    expect(() => interfaceDefinition.scanFiles(jsonData)).to.throw(InterfaceDefinitionError)
+    expect(() => interfaceDefinition.buildComparisonTree()).to.throw(InterfaceDefinitionError)
   })
 })
 

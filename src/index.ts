@@ -12,6 +12,7 @@ loadJson('./test/fixtures/app-config.json').then((data) => {
       tsConfigFilePath: "../crayon-types/tsconfig.json"
     },
     sourceFilePath: "../crayon-types/src/index.ts",
+    targetData: data
   })
-  interfaceDefinition.scanFiles(data)
+  interfaceDefinition.compareToTarget()
 })
