@@ -6,6 +6,9 @@
 import { ExportedDeclarations, InterfaceDeclaration } from "ts-morph";
 
 export class AbstractSyntaxTree {
+  private propName?: string
+  private type?: string
+
     constructor(
       public tsDeclarationNode: InterfaceDeclaration,
       public companionObject: any,
@@ -23,11 +26,9 @@ export class AbstractSyntaxTree {
       // })
       this.tsDeclarationNode.getProperties().map((m) => {
         const prop = m.getSymbol()  // IFのプロパティ
-        console.log(m.getName())
-
-        console.log(m.getType().getText())
-        //console.log(m.getSymbol())
-        //console.log(m)
+        this.propName = m.getName()
+        this.type = m.getType().getText()
+        console.log(this.propName, this.type)
       })
     }
 }
