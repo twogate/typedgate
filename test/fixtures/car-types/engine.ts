@@ -3,7 +3,7 @@ export type FuelSystemKind = 'injection' | 'carburetor';
 export type EngineDirection = 'longitudinal' | 'transverse';
 
 
-// @TG:path
+// @TG:path .engine
 export interface Engine {
   name: string
   displacement: number;
@@ -17,4 +17,6 @@ export interface Engine {
   cylinderCount: number;
   rotary: boolean;
   diesel: boolean;
+  cylinderLayout: CylinderLayout;
+  engineDirection: EngineDirection;
 }

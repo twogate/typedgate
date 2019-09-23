@@ -1,10 +1,10 @@
-export class InterfaceDefinitionError extends Error {
-  public name = 'InterfaceDefinitionError';
+export class TypedgateError extends Error {
+  public name = 'TypedgateError';
 
   constructor(
     public message: string,
-    public interfaceSourcePath: string,
-    public interfacePos: number
+    public interfaceSourcePath?: string,
+    public interfacePos?: number
   ) {
     super(message)
   }

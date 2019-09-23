@@ -75,7 +75,7 @@ describe('object-path toArray', () => {
   it('root', () => {
     if (!fixtureObj.level1.level2.level3.l3arr[1].level4_2) { return }
     const op = new ObjectPath('.level1.level2.level3.l3arr[1].level4_2.l4arr[2]')
-    expect(op.toArray()).to.deep.equal(['level1','level2','level3','l3arr',1,'level4_2','l4arr',2])
+    expect(op.path).to.deep.equal(['level1','level2','level3','l3arr',1,'level4_2','l4arr',2])
   })
 })
 

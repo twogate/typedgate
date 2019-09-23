@@ -1,0 +1,18 @@
+{
+  "engine": {
+    "name": "1KZ",
+    "displacement": 2982,
+    "bore": 96,
+    "stroke": 103,
+    "compressionRatio": 21.2,
+    "turbo": true,
+    "intercooler": false,
+    "fuelSystem": "injection",
+    "vvt": false,
+    "cylinderCount": 4,
+    "rotary": false,
+    "diesel": true,
+    "cylinderLayout": "inline",
+    "engineDirection": "longitudinal"
+  }
+}

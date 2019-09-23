@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import { loadJson } from '../../src/file-utils'
-import { InterfaceDefinition, InterfaceDefinitionError } from '../../src/interface-definition'
-import { ObjectPath } from '../../src/object-path'
+import { InterfaceDefinition } from '../../src/interface-definition'
+import { TypedgateError } from '../../src/typedgate-error'
 
 describe('interface-definition', () => {
   let jsonData: any
@@ -20,7 +20,7 @@ describe('interface-definition', () => {
       sourceFilePath: "./test/fixtures/bad-types/badtype1.ts",
       targetData: jsonData
     })
-    expect(() => interfaceDefinition.buildComparisonTree()).to.throw(InterfaceDefinitionError)
+    expect(() => interfaceDefinition.buildComparisonTree()).to.throw(TypedgateError)
   })
   it('badtype2', () => {
     const interfaceDefinition = new InterfaceDefinition({
@@ -30,7 +30,7 @@ describe('interface-definition', () => {
       sourceFilePath: "./test/fixtures/bad-types/badtype2.ts",
       targetData: jsonData
     })
-    expect(() => interfaceDefinition.buildComparisonTree()).to.throw(InterfaceDefinitionError)
+    expect(() => interfaceDefinition.buildComparisonTree()).to.throw(TypedgateError)
   })
 })
 
