@@ -56,6 +56,10 @@ describe('object-path traverse', () => {
     const op = new ObjectPath('.l0prop1')
     expect(op.traverse(fixtureObj)).to.be.true
   })
+  it('level1 property', () => {
+    const op = new ObjectPath('.level1.l1prop3')
+    expect(op.traverse(fixtureObj)).to.equal(123)
+  })
   it('level3 array', () => {
     const op = new ObjectPath('.level1.level2.level3.l3arr')
     expect(op.traverse(fixtureObj)).to.deep.equal(fixtureObj.level1.level2.level3.l3arr)

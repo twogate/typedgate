@@ -3,5 +3,6 @@
     "tslint:recommended",
     "tslint-config-prettier"
   ],
-  "no-console": false
+  "no-console": false,
+  "no-eval": false
 }

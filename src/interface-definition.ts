@@ -1,4 +1,4 @@
-import { InterfaceDeclaration, Project, ProjectOptions, SourceFile } from "ts-morph";
+import { InterfaceDeclaration, Project, ProjectOptions, SourceFile, SyntaxKind, UnionTypeNode, ExportedDeclarations } from "ts-morph";
 import { AbstractSyntaxTree } from './abstract-syntax-tree'
 import { ControlComment } from './control-comment'
 import { ObjectPath } from './object-path'
@@ -10,9 +10,15 @@ interface IInterfaceDefinitionArgument {
   targetData: any
 }
 
+interface ITypesDictionary {
+  typeName: string,
+  possibleValue: Array<string|number|null>,
+}
+
 export class InterfaceDefinition {
   private sourceFile: SourceFile
   private targetData: any
+  private typesDict?: { [key:string]: ITypesDictionary }
 
   constructor(opts: IInterfaceDefinitionArgument) {
     const project = new Project({
@@ -23,7 +29,39 @@ export class InterfaceDefinition {
   }
 
   public compareToTarget() {
+//    this.buildTypesDictionary()
     this.buildComparisonTree()
+  }
+
+  public generatePossibleValuesForUnion(node: ExportedDeclarations) {
+          //console.log(d.get)
+          node.getChildrenOfKind(SyntaxKind.UnionType).map((u) => {
+            //console.log(u)
+            console.log(u.getChildren)
+          })
+          // d.getChildren().map((c) => {
+          //   console.log(c.getKindName())
+          // })
+          // this.typesDict[typeName] = {
+          //   typeName: typeName,
+          //   possibleValue: [],
+          // }
+  }
+
+  public buildTypesDictionary() {
+    for (const [name, declarations] of this.sourceFile.getExportedDeclarations()) {
+      const ast = declarations.forEach((d) => {
+        const typeName = d.getType().getText()
+        if (d.getType().isUnion()) {
+          //console.log(d.getSymbol())
+          const symbol = d.getSymbol()
+          if (symbol) {
+            console.log(symbol.getDeclarations())
+          }
+          this.generatePossibleValuesForUnion(d)
+        }
+      })
+    }
   }
 
   public buildComparisonTree() {
