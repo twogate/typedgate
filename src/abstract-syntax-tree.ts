@@ -3,7 +3,7 @@
  * Keiya Chinen @ TwoGate inc.
  */
 
-import { ExportedDeclarations, InterfaceDeclaration, PropertySignature, printNode } from "ts-morph"
+import { ExportedDeclarations, InterfaceDeclaration, PropertySignature, printNode, Type } from "ts-morph"
 import { SyntaxKind } from "typescript"
 import { ObjectPath } from './object-path'
 import * as ts from "typescript";
@@ -40,11 +40,12 @@ export class AbstractSyntaxTree {
       //   //console.log(m.getSymbol())
       //   //console.log(m)
       // })
-      console.log(this.objectPath, this.pairedNode)
       this.validateDescendants()
     }
 
     public validateDescendants() {
+      console.log("validateDescendants:", this.objectPath, this.pairedNode)
+
       const node = this.node
       if (node instanceof InterfaceDeclaration) {
         node.getProperties().map((m) => {
@@ -55,7 +56,6 @@ export class AbstractSyntaxTree {
           //console.log(m.findReferencesAsNodes())
           //this.pairedNode =
           //console.log(this.objectPath.concat([this.propName]))
-          console.log('recursively')
           this.child = new AbstractSyntaxTree(
             m,
             new ObjectPath([this.propName]).traverse(this.pairedNode),
@@ -63,6 +63,9 @@ export class AbstractSyntaxTree {
           this.child.validateDescendants()
         })
       } else if (node instanceof PropertySignature) {
+        const type = node.getType()
+        console.log(node.getFullText(),type.getText(),'NULLABLE==============',node.getType().isNullable())
+        console.log('bool?=',type.isBoolean())
         if (node.getFirstChildByKind(SyntaxKind.QuestionToken)) {
           if (this.pairedNode === null || this.pairedNode === undefined) {
             this._valid = true
@@ -70,46 +73,69 @@ export class AbstractSyntaxTree {
             return true
           }
         }
-        const typeName = node.getType().getText()
-        console.log(node.getType().compilerType)
-        switch (typeName) {
-          case 'number':
-            if (typeof this.pairedNode === 'number') {
-              console.log(this.objectPath, 'valid!!!!!!')
-              this._valid = true
-              return true
-            }
-            break
-          case 'string':
-            if (typeof this.pairedNode === 'string') {
-              console.log(this.objectPath, 'valid!!!!!!')
-              this._valid = true
-              return true
-            }
-            break
-          case 'boolean':
-            if (typeof this.pairedNode === 'boolean') {
-              console.log(this.objectPath, 'valid!!!!!!')
-              this._valid = true
-              return true
-            }
-            break
-          default:
-
-            const typeReferenceNode = node.getChildrenOfKind(SyntaxKind.TypeReference)
-            if (typeReferenceNode) {
-              typeReferenceNode.map((t) => {
-                if (t.getType().isUnion()) {
-                  const possibleValues = t.getType().getUnionTypes().map((t) => eval(t.getText()))
-                  if (possibleValues.includes(this.pairedNode)) {
-                    this._valid = true
-                    console.log(this.objectPath, 'valid!!!!!!')
-                  }
-                }
-              })
-            }
+        const checkResult = this.checkType(type, this.pairedNode)
+        if (checkResult) {
+          this._valid = true
+          console.log(this.objectPath, 'valid!!!!!!')
+          return true
         }
+
+        console.log("!!!!!!!!!!!!!!!!! NO HOOK !!!!!!!!!!!!!!!!!!!!!")
+
+        // const typeReferenceNode = node.getChildrenOfKind(SyntaxKind.TypeReference)
+        // if (typeReferenceNode) {
+        //   typeReferenceNode.map((t) => {
+        //     if (t.getType().isUnion()) {
+        //       const possibleValues = t.getType().getUnionTypes().map((t) => eval(t.getText()))
+        //       if (possibleValues.includes(this.pairedNode)) {
+        //         this._valid = true
+        //         console.log(this.objectPath, 'valid!!!!!!')
+        //       }
+        //     }
+        //   })
+        // }
+
       }
     }
-
+  private checkType(type: Type, value: any) {
+    const unionTypes = type.getUnionTypes()
+    console.log('checkType: type=',type.getText(),' | value=',value)
+    console.log(
+      'number:',type.isNumber(),
+      '| string:',type.isString(),
+      '| boolean:',type.isBoolean(),
+      '| numberLiteral:',type.isNumberLiteral(),
+      '| stringLiteral:',type.isStringLiteral(),
+      '| booleanLiteral:',type.isBooleanLiteral(),
+    )
+    if ((type.isNumber() || type.isNumberLiteral()) && typeof value === 'number') {
+      return true
+    }
+    else if (type.isString() && typeof value === 'string') {
+      return true
+    }
+    else if ((type.isBoolean() || type.isBooleanLiteral()) && typeof value === 'boolean') {
+      return true
+    }
+    else if (type.isStringLiteral() && type.getText() === value) {
+      return true
+    }
+    else if (unionTypes) {
+      return unionTypes.some((t) => {
+        const checkResult = this.checkType(t, value)
+        console.log('checking union:',t.getText(), value, checkResult)
+        if (checkResult) {
+          return true
+        }
+        return false
+      })
+      // console.log(resultMap)
+      // if (resultMap.some(r => r === true)) {
+      //   this._valid = true
+      //   console.log(this.objectPath, 'valid!!!!!!')
+      //   return true
+      // }
+    }
+    return false
+  }
 }

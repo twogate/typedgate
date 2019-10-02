@@ -1,3 +1,6 @@
+export type UnionType = string | boolean;
+export type LiteralUnionType = 'literal!' | true | 987;
+
 // @TG:path .simpleString
 export interface SimpleString {
   text: string;
@@ -15,5 +18,20 @@ export interface SimpleBoolean {
 
 // @TG:path .simpleUnion
 export interface SimpleUnion {
-  uni: boolean | string | number;
+  uni: string | number;
+}
+
+// @TG:path .simpleTypeUnion
+export interface SimpleTypeUnion {
+  uni: UnionType;
+}
+
+// @TG:path .simpleLiteralUnion
+export interface SimpleLiteralUnion {
+  uni: 'this is a literal' | true | 114514.1919;
+}
+
+// @TG:path .simpleLiteralTypeUnion
+export interface SimpleLiteralTypeUnion {
+  uni: LiteralUnionType;
 }
