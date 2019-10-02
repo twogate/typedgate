@@ -18,9 +18,12 @@ interface ILeafNode {
 }
 
 export class AbstractSyntaxTree {
+  private _valid: boolean = false
+  public get valid(): boolean {
+    return this._valid
+  }
   private propName?: string
   private type?: string
-  private valid?: boolean
 
     constructor(
       public node: InterfaceDeclaration | PropertySignature | LeafType,
@@ -29,7 +32,7 @@ export class AbstractSyntaxTree {
       public child?: AbstractSyntaxTree
     ) { }
 
-    public rebuild() {
+    public reconstruct() {
       // this.node.getMembers().map((m) => {
       //   const prop = m.getSymbol()  // IFのプロパティ
 
@@ -37,12 +40,12 @@ export class AbstractSyntaxTree {
       //   //console.log(m.getSymbol())
       //   //console.log(m)
       // })
-      //console.log(this.pairedNode)
-      console.log(this.objectPath)
-      this.getDescendant(this.node)
+      console.log(this.objectPath, this.pairedNode)
+      this.validateDescendants()
     }
 
-    private getDescendant(node: InterfaceDeclaration | PropertySignature | LeafType) {
+    public validateDescendants() {
+      const node = this.node
       if (node instanceof InterfaceDeclaration) {
         node.getProperties().map((m) => {
           const prop = m.getSymbol()  // IFのプロパティ
@@ -52,57 +55,60 @@ export class AbstractSyntaxTree {
           //console.log(m.findReferencesAsNodes())
           //this.pairedNode =
           //console.log(this.objectPath.concat([this.propName]))
+          console.log('recursively')
           this.child = new AbstractSyntaxTree(
             m,
             new ObjectPath([this.propName]).traverse(this.pairedNode),
             this.objectPath.concat([this.propName]))
-          this.child.rebuild()
+          this.child.validateDescendants()
         })
       } else if (node instanceof PropertySignature) {
-        const typeName = node.getType().getText()
-        // if node is leaf
-        if (this.isLeaf(typeName)) {
-          this.child = new AbstractSyntaxTree(
-            typeName as LeafType, // key
-            this.pairedNode, // value
-            this.objectPath.concat([typeName])
-          )
-        } else {
-
-
-//           node.findReferences().map((r) => {
-//             //console.log(r)
-//           })
-// engineDirection: EngineDirection;
-// Identifier
-// Node
-// TypeReferenceNode
-// Identifier
-// Node
-//node.getDescendantsOfKind(SyntaxKind.Identifier).map((i) => console.log(i.getImplementations()))
-           const typeReferenceNode = node.getChildrenOfKind(SyntaxKind.TypeReference)
-           if (typeReferenceNode) {
-             typeReferenceNode.map((t) => {
-               if (t.getType().isUnion()) {
-                 const possibleValues = t.getType().getUnionTypes().map((t) => eval(t.getText()))
-                 if (possibleValues.includes(this.pairedNode)) {
-                   console.log('valid!!!!!!')
-                 }
-               }
-             })
-           }
+        if (node.getFirstChildByKind(SyntaxKind.QuestionToken)) {
+          if (this.pairedNode === null || this.pairedNode === undefined) {
+            this._valid = true
+            console.log(this.objectPath, 'valid!!!!!!')
+            return true
+          }
         }
-      }
-    }
+        const typeName = node.getType().getText()
+        console.log(node.getType().compilerType)
+        switch (typeName) {
+          case 'number':
+            if (typeof this.pairedNode === 'number') {
+              console.log(this.objectPath, 'valid!!!!!!')
+              this._valid = true
+              return true
+            }
+            break
+          case 'string':
+            if (typeof this.pairedNode === 'string') {
+              console.log(this.objectPath, 'valid!!!!!!')
+              this._valid = true
+              return true
+            }
+            break
+          case 'boolean':
+            if (typeof this.pairedNode === 'boolean') {
+              console.log(this.objectPath, 'valid!!!!!!')
+              this._valid = true
+              return true
+            }
+            break
+          default:
 
-    private isLeaf(typeName: string) {
-      switch (typeName) {
-        case 'boolean':
-        case 'number':
-        case 'string':
-          return true
-        default:
-          return false
+            const typeReferenceNode = node.getChildrenOfKind(SyntaxKind.TypeReference)
+            if (typeReferenceNode) {
+              typeReferenceNode.map((t) => {
+                if (t.getType().isUnion()) {
+                  const possibleValues = t.getType().getUnionTypes().map((t) => eval(t.getText()))
+                  if (possibleValues.includes(this.pairedNode)) {
+                    this._valid = true
+                    console.log(this.objectPath, 'valid!!!!!!')
+                  }
+                }
+              })
+            }
+        }
       }
     }
 

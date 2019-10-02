@@ -19,4 +19,5 @@ export interface Engine {
   diesel: boolean;
   cylinderLayout: CylinderLayout;
   engineDirection: EngineDirection;
+  ignitionPlugName?: string
 }

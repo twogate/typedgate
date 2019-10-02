@@ -110,6 +110,7 @@ export class InterfaceDefinition {
       }
     }
     console.log(asts)
-    asts.map((ast) => ast.rebuild())
+    asts.map((ast) => ast.validateDescendants())
+    console.log(asts)
   }
 }
