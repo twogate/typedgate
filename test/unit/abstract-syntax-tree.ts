@@ -5,7 +5,6 @@ export type CylinderLayout = 'inline' | 'flat' | 'v';
 export type FuelSystemKind = 'injection' | 'carburetor';
 export type EngineDirection = 'longitudinal' | 'transverse';
 
-
 // @TG:path .engine
 export interface Engine {
   name: string
@@ -81,6 +80,25 @@ const fixtureObjSimpleFailure = {
   }
 }
 
+const fixtureObjCar = {
+  "engine": {
+    "name": "1KZ",
+    "displacement": 2982,
+    "bore": 96,
+    "stroke": 103,
+    "compressionRatio": 21.2,
+    "turbo": true,
+    "intercooler": false,
+    "fuelSystem": "injection",
+    "vvt": false,
+    "cylinderCount": 4,
+    "rotary": false,
+    "diesel": true,
+    "cylinderLayout": "inline",
+    "engineDirection": "longitudinal"
+  }
+}
+
 // describe('abstract syntax tree (car)', () => {
 //   let project: Project
 //   let sourceFile: SourceFile
@@ -112,10 +130,6 @@ describe('abstract syntax tree (simple string)', () => {
     sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
     declaration = sourceFile.getExportedDeclarations().get('SimpleString')
     done()
-  })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
-//    new AbstractSyntaxTree(interfaceDefinition, fixtureObj, [])
   })
   it('check equality', () => {
     if (!declaration) return
@@ -152,9 +166,6 @@ describe('abstract syntax tree (simple number)', () => {
     declaration = sourceFile.getExportedDeclarations().get('SimpleNumber')
     done()
   })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
-  })
   it('check equality', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleNumber, ['simpleNumber'])
@@ -184,9 +195,6 @@ describe('abstract syntax tree (simple boolean)', () => {
     sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
     declaration = sourceFile.getExportedDeclarations().get('SimpleBoolean')
     done()
-  })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
   })
   it('check equality', () => {
     if (!declaration) return
@@ -218,9 +226,6 @@ describe('abstract syntax tree (simple union)', () => {
     declaration = sourceFile.getExportedDeclarations().get('SimpleUnion')
     done()
   })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
-  })
   it('check equality', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleUnion, ['simpleUnion'])
@@ -250,9 +255,6 @@ describe('abstract syntax tree (simple type union)', () => {
     sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
     declaration = sourceFile.getExportedDeclarations().get('SimpleTypeUnion')
     done()
-  })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
   })
   it('check equality', () => {
     if (!declaration) return
@@ -284,9 +286,6 @@ describe('abstract syntax tree (simple literal union)', () => {
     declaration = sourceFile.getExportedDeclarations().get('SimpleLiteralUnion')
     done()
   })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
-  })
   it('check equality', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleLiteralUnion, ['simpleLiteralUnion'])
@@ -316,9 +315,6 @@ describe('abstract syntax tree (simple literal type union)', () => {
     sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
     declaration = sourceFile.getExportedDeclarations().get('SimpleLiteralTypeUnion')
     done()
-  })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
   })
   it('check equality', () => {
     if (!declaration) return
@@ -350,9 +346,6 @@ describe('abstract syntax tree (simple string; fail)', () => {
     declaration = sourceFile.getExportedDeclarations().get('SimpleString')
     done()
   })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
-  })
   it('check equality', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleString, ['simpleString'])
@@ -382,9 +375,6 @@ describe('abstract syntax tree (simple number; fail)', () => {
     sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
     declaration = sourceFile.getExportedDeclarations().get('SimpleNumber')
     done()
-  })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
   })
   it('check equality', () => {
     if (!declaration) return
@@ -416,9 +406,6 @@ describe('abstract syntax tree (simple boolean; fail)', () => {
     declaration = sourceFile.getExportedDeclarations().get('SimpleBoolean')
     done()
   })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
-  })
   it('check equality', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleBoolean, ['simpleBoolean'])
@@ -448,9 +435,6 @@ describe('abstract syntax tree (simple union; fail)', () => {
     sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
     declaration = sourceFile.getExportedDeclarations().get('SimpleUnion')
     done()
-  })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
   })
   it('check equality', () => {
     if (!declaration) return
@@ -482,9 +466,6 @@ describe('abstract syntax tree (simple type union; fail)', () => {
     declaration = sourceFile.getExportedDeclarations().get('SimpleTypeUnion')
     done()
   })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
-  })
   it('check equality', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleTypeUnion, ['simpleTypeUnion'])
@@ -514,9 +495,6 @@ describe('abstract syntax tree (simple literal union; fail)', () => {
     sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
     declaration = sourceFile.getExportedDeclarations().get('SimpleLiteralUnion')
     done()
-  })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
   })
   it('check equality', () => {
     if (!declaration) return
@@ -548,9 +526,6 @@ describe('abstract syntax tree (simple literal type union; fail)', () => {
     declaration = sourceFile.getExportedDeclarations().get('SimpleLiteralTypeUnion')
     done()
   })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
-  })
   it('check equality', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleLiteralTypeUnion, ['simpleLiteralTypeUnion'])
@@ -580,9 +555,6 @@ describe('abstract syntax tree (nullable `?` property)', () => {
     sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
     declaration = sourceFile.getExportedDeclarations().get('UndefinedType')
     done()
-  })
-  it('declaration is not undefined', () => {
-    expect(declaration).to.not.be.undefined
   })
   it('check nullable property (null)', () => {
     if (!declaration) return
@@ -615,6 +587,39 @@ describe('abstract syntax tree (nullable `?` property)', () => {
         child.validateDescendants()
         expect(child.pairedNode).to.equal(({} as any)[propName])
         expect(child.objectPath).to.deep.equal(['undefinedType', propName])
+        expect(child.valid).to.be.true
+      }
+    })
+  })
+})
+
+describe('abstract syntax tree (car-types/engine)', () => {
+  let project: Project
+  let sourceFile: SourceFile
+  let declaration: ExportedDeclarations[] | undefined
+
+  before((done) => {
+    project = new Project({
+      tsConfigFilePath: "./test/fixtures/car-types/tsconfig.json"
+    });
+    sourceFile = project.getSourceFileOrThrow("./test/fixtures/car-types/engine.ts");
+    declaration = sourceFile.getExportedDeclarations().get('Engine')
+    done()
+  })
+  it('check nullable property (null)', () => {
+    if (!declaration) return
+    const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjCar.engine, ['engine'])
+    ast.validateDescendants()
+    expect(ast.pairedNode).to.equal(fixtureObjCar.engine)
+    expect(ast.objectPath).to.deep.equal(['engine'])
+    declaration[0].getChildrenOfKind(SyntaxKind.PropertySignature).map((p) => {
+      const prop = p.getFirstChild()
+      if (prop) {
+        const propName = prop.getText()
+        const child = new AbstractSyntaxTree(p, (fixtureObjCar.engine as any)[propName], ['engine', propName])
+        child.validateDescendants()
+        expect(child.pairedNode).to.equal((fixtureObjCar.engine as any)[propName])
+        expect(child.objectPath).to.deep.equal(['engine', propName])
         expect(child.valid).to.be.true
       }
     })

@@ -3,13 +3,10 @@
  * Keiya Chinen @ TwoGate inc.
  */
 
-import { ExportedDeclarations, InterfaceDeclaration, PropertySignature, printNode, Type } from "ts-morph"
+import { ExportedDeclarations, InterfaceDeclaration, PropertySignature, Type } from "ts-morph"
 import { SyntaxKind } from "typescript"
 import { ObjectPath } from './object-path'
-import * as ts from "typescript";
 
-
-//{ type: string; value: any; }
 export type LeafType = 'boolean' | 'number' | 'string' | 'null';
 
 interface ILeafNode {
@@ -33,13 +30,6 @@ export class AbstractSyntaxTree {
     ) { }
 
     public reconstruct() {
-      // this.node.getMembers().map((m) => {
-      //   const prop = m.getSymbol()  // IFのプロパティ
-
-      //   console.log(m.getType().getText())
-      //   //console.log(m.getSymbol())
-      //   //console.log(m)
-      // })
       this.validateDescendants()
     }
 
@@ -52,10 +42,6 @@ export class AbstractSyntaxTree {
           const prop = m.getSymbol()  // IFのプロパティ
           this.propName = m.getName()
           this.type = m.getType().getText()
-          //console.log(this.propName, this.type)
-          //console.log(m.findReferencesAsNodes())
-          //this.pairedNode =
-          //console.log(this.objectPath.concat([this.propName]))
           this.child = new AbstractSyntaxTree(
             m,
             new ObjectPath([this.propName]).traverse(this.pairedNode),
@@ -114,7 +100,7 @@ export class AbstractSyntaxTree {
     else if (type.isNumberLiteral() && Number(type.getText()) === value) {
       return true
     }
-    else if (type.isStringLiteral() && type.getText() === value) {
+    else if (type.isStringLiteral() && eval(`String(${type.getText()})`) === value) {
       return true
     }
     else if (type.isBooleanLiteral() && (type.getText() === 'true') === value) {
