@@ -1,4 +1,9 @@
-import { InterfaceDeclaration, Project, ProjectOptions, SourceFile, SyntaxKind, UnionTypeNode, ExportedDeclarations } from "ts-morph";
+/*
+ * Interface Definition
+ * Keiya Chinen @ TwoGate inc.
+ */
+
+ import { InterfaceDeclaration, Project, ProjectOptions, SourceFile, SyntaxKind, UnionTypeNode, ExportedDeclarations } from "ts-morph";
 import { AbstractSyntaxTree } from './abstract-syntax-tree'
 import { ControlComment } from './control-comment'
 import { ObjectPath } from './object-path'

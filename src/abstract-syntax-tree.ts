@@ -3,7 +3,7 @@
  * Keiya Chinen @ TwoGate inc.
  */
 
-import { ExportedDeclarations, InterfaceDeclaration, PropertySignature, Type } from "ts-morph"
+import { ExportedDeclarations, InterfaceDeclaration, PropertySignature, Type, ArrayTypeNode } from "ts-morph"
 import { SyntaxKind } from "typescript"
 import { ObjectPath } from './object-path'
 
@@ -105,6 +105,33 @@ export class AbstractSyntaxTree {
     }
     else if (type.isBooleanLiteral() && (type.getText() === 'true') === value) {
       return true
+    }
+    else if (type.isArray()) {
+      const arrayNode = (this.node as PropertySignature).getChildrenOfKind(SyntaxKind.ArrayType)
+      console.log("YEAH>>>>>>>>>>>>>>>", type.getArrayElementType())
+      const elType = type.getArrayElementType()
+      if (elType)
+      console.log(
+        'number:',elType.isNumber(),
+        '| string:',elType.isString(),
+        '| boolean:',elType.isBoolean(),
+        '| numberLiteral:',elType.isNumberLiteral(),
+        '| stringLiteral:',elType.isStringLiteral(),
+        '| booleanLiteral:',elType.isBooleanLiteral(),
+      )
+      arrayNode.map((a) => {
+        console.log('MAPPING:', a.getText())
+      })
+      if (elType) {
+        const result = value.every((v: any) => {
+          return this.checkType(elType, v)
+        })
+        if (result) {
+          console.log('TRUE!!!!!!!!!')
+          this._valid = true
+          return true
+        }
+      }
     }
     else if (unionTypes) {
       return unionTypes.some((t) => {
