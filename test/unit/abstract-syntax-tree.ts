@@ -24,24 +24,6 @@ export interface Engine {
   engineDirection: EngineDirection;
 }
 
-const fixtureObjEngine = {
-  "engine": {
-    "name": "1KZ",
-    "displacement": 2982,
-    "bore": 96,
-    "stroke": 103,
-    "compressionRatio": 21.2,
-    "turbo": true,
-    "intercooler": false,
-    "fuelSystem": "injection",
-    "vvt": false,
-    "cylinderCount": 4,
-    "rotary": false,
-    "diesel": true,
-    "cylinderLayout": "inline",
-    "engineDirection": "longitudinal"
-  }
-}
 const fixtureObjSimple = {
   "simpleString": {
     "text": "simple string check!"
@@ -64,6 +46,15 @@ const fixtureObjSimple = {
   "simpleLiteralTypeUnion": {
     "uni": 987
   },
+  "undefinedType":  {
+    "undefNumber": null,
+    "undefString": null,
+    "undefBoolean": null,
+    "undefUnion": null,
+    "undefTypeUnion": null,
+    "undefLiteralUnion": null,
+    "undefLiteralTypeUnion": null,
+  }
 }
 
 const fixtureObjSimpleFailure = {
@@ -87,7 +78,7 @@ const fixtureObjSimpleFailure = {
   },
   "simpleLiteralTypeUnion": {
     "uni": false
-  },
+  }
 }
 
 // describe('abstract syntax tree (car)', () => {
@@ -99,9 +90,10 @@ const fixtureObjSimpleFailure = {
 //       tsConfigFilePath: "./test/fixtures/car-types/tsconfig.json"
 //     });
 //     sourceFile = project.getSourceFileOrThrow("./test/fixtures/car-types/engine.ts");
+//     declaration = sourceFile.getExportedDeclarations().get('Engine')
 //     done()
 //   })
-//   it('simple', () => {
+//   it('failure test', () => {
 //     console.log(sourceFile.getExportedDeclarations())
 
 // //    new AbstractSyntaxTree(interfaceDefinition, fixtureObj, [])
@@ -129,7 +121,7 @@ describe('abstract syntax tree (simple string)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleString, ['simpleString'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleString.text, ['simpleString.text'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleString.text, ['simpleString','text'])
     expect(ast.pairedNode).to.equal(fixtureObjSimple.simpleString)
     expect(ast.objectPath).to.deep.equal(['simpleString'])
     if (ast.child) {
@@ -167,7 +159,7 @@ describe('abstract syntax tree (simple number)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleNumber, ['simpleNumber'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleNumber.num, ['simpleNumber.num'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleNumber.num, ['simpleNumber','num'])
     expect(ast.pairedNode).to.equal(fixtureObjSimple.simpleNumber)
     expect(ast.objectPath).to.deep.equal(['simpleNumber'])
     if (ast.child) {
@@ -200,7 +192,7 @@ describe('abstract syntax tree (simple boolean)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleBoolean, ['simpleBoolean'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleBoolean.bool, ['simpleBoolean.bool'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleBoolean.bool, ['simpleBoolean','bool'])
     expect(ast.pairedNode).to.equal(fixtureObjSimple.simpleBoolean)
     expect(ast.objectPath).to.deep.equal(['simpleBoolean'])
     if (ast.child) {
@@ -233,7 +225,7 @@ describe('abstract syntax tree (simple union)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleUnion, ['simpleUnion'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleUnion.uni, ['simpleUnion.uni'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleUnion.uni, ['simpleUnion','uni'])
     expect(ast.pairedNode).to.equal(fixtureObjSimple.simpleUnion)
     expect(ast.objectPath).to.deep.equal(['simpleUnion'])
     if (ast.child) {
@@ -266,7 +258,7 @@ describe('abstract syntax tree (simple type union)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleTypeUnion, ['simpleTypeUnion'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleTypeUnion.uni, ['simpleTypeUnion.uni'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleTypeUnion.uni, ['simpleTypeUnion','uni'])
     expect(ast.pairedNode).to.equal(fixtureObjSimple.simpleTypeUnion)
     expect(ast.objectPath).to.deep.equal(['simpleTypeUnion'])
     if (ast.child) {
@@ -299,7 +291,7 @@ describe('abstract syntax tree (simple literal union)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleLiteralUnion, ['simpleLiteralUnion'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleLiteralUnion.uni, ['simpleLiteralUnion.uni'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleLiteralUnion.uni, ['simpleLiteralUnion','uni'])
     expect(ast.pairedNode).to.equal(fixtureObjSimple.simpleLiteralUnion)
     expect(ast.objectPath).to.deep.equal(['simpleLiteralUnion'])
     if (ast.child) {
@@ -332,7 +324,7 @@ describe('abstract syntax tree (simple literal type union)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleLiteralTypeUnion, ['simpleLiteralTypeUnion'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleLiteralTypeUnion.uni, ['simpleLiteralTypeUnion.uni'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleLiteralTypeUnion.uni, ['simpleLiteralTypeUnion','uni'])
     expect(ast.pairedNode).to.equal(fixtureObjSimple.simpleLiteralTypeUnion)
     expect(ast.objectPath).to.deep.equal(['simpleLiteralTypeUnion'])
     if (ast.child) {
@@ -365,7 +357,7 @@ describe('abstract syntax tree (simple string; fail)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleString, ['simpleString'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleString.text, ['simpleString.text'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleString.text, ['simpleString','text'])
     expect(ast.pairedNode).to.equal(fixtureObjSimpleFailure.simpleString)
     expect(ast.objectPath).to.deep.equal(['simpleString'])
     if (ast.child) {
@@ -398,7 +390,7 @@ describe('abstract syntax tree (simple number; fail)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleNumber, ['simpleNumber'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleNumber.num, ['simpleNumber.num'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleNumber.num, ['simpleNumber','num'])
     expect(ast.pairedNode).to.equal(fixtureObjSimpleFailure.simpleNumber)
     expect(ast.objectPath).to.deep.equal(['simpleNumber'])
     if (ast.child) {
@@ -431,7 +423,7 @@ describe('abstract syntax tree (simple boolean; fail)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleBoolean, ['simpleBoolean'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleBoolean.bool, ['simpleBoolean.bool'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleBoolean.bool, ['simpleBoolean','bool'])
     expect(ast.pairedNode).to.equal(fixtureObjSimpleFailure.simpleBoolean)
     expect(ast.objectPath).to.deep.equal(['simpleBoolean'])
     if (ast.child) {
@@ -464,7 +456,7 @@ describe('abstract syntax tree (simple union; fail)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleUnion, ['simpleUnion'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleUnion.uni, ['simpleUnion.uni'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleUnion.uni, ['simpleUnion','uni'])
     expect(ast.pairedNode).to.equal(fixtureObjSimpleFailure.simpleUnion)
     expect(ast.objectPath).to.deep.equal(['simpleUnion'])
     if (ast.child) {
@@ -497,7 +489,7 @@ describe('abstract syntax tree (simple type union; fail)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleTypeUnion, ['simpleTypeUnion'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleTypeUnion.uni, ['simpleTypeUnion.uni'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleTypeUnion.uni, ['simpleTypeUnion','uni'])
     expect(ast.pairedNode).to.equal(fixtureObjSimpleFailure.simpleTypeUnion)
     expect(ast.objectPath).to.deep.equal(['simpleTypeUnion'])
     if (ast.child) {
@@ -510,7 +502,7 @@ describe('abstract syntax tree (simple type union; fail)', () => {
   })
 })
 
-describe('abstract syntax tree (simple literal union)', () => {
+describe('abstract syntax tree (simple literal union; fail)', () => {
   let project: Project
   let sourceFile: SourceFile
   let declaration: ExportedDeclarations[] | undefined
@@ -530,7 +522,7 @@ describe('abstract syntax tree (simple literal union)', () => {
     if (!declaration) return
     const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleLiteralUnion, ['simpleLiteralUnion'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleLiteralUnion.uni, ['simpleLiteralUnion.uni'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleLiteralUnion.uni, ['simpleLiteralUnion','uni'])
     expect(ast.pairedNode).to.equal(fixtureObjSimpleFailure.simpleLiteralUnion)
     expect(ast.objectPath).to.deep.equal(['simpleLiteralUnion'])
     if (ast.child) {
@@ -543,7 +535,7 @@ describe('abstract syntax tree (simple literal union)', () => {
   })
 })
 
-describe('abstract syntax tree (simple literal union)', () => {
+describe('abstract syntax tree (simple literal type union; fail)', () => {
   let project: Project
   let sourceFile: SourceFile
   let declaration: ExportedDeclarations[] | undefined
@@ -553,7 +545,7 @@ describe('abstract syntax tree (simple literal union)', () => {
       tsConfigFilePath: "./test/fixtures/simple-types/tsconfig.json"
     });
     sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
-    declaration = sourceFile.getExportedDeclarations().get('SimpleLiteralUnion')
+    declaration = sourceFile.getExportedDeclarations().get('SimpleLiteralTypeUnion')
     done()
   })
   it('declaration is not undefined', () => {
@@ -561,17 +553,70 @@ describe('abstract syntax tree (simple literal union)', () => {
   })
   it('check equality', () => {
     if (!declaration) return
-    const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleLiteralUnion, ['simpleLiteralUnion'])
+    const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimpleFailure.simpleLiteralTypeUnion, ['simpleLiteralTypeUnion'])
     ast.validateDescendants()
-    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleLiteralUnion.uni, ['simpleLiteralUnion.uni'])
-    expect(ast.pairedNode).to.equal(fixtureObjSimple.simpleLiteralUnion)
-    expect(ast.objectPath).to.deep.equal(['simpleLiteralUnion'])
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimpleFailure.simpleLiteralTypeUnion.uni, ['simpleLiteralTypeUnion','uni'])
+    expect(ast.pairedNode).to.equal(fixtureObjSimpleFailure.simpleLiteralTypeUnion)
+    expect(ast.objectPath).to.deep.equal(['simpleLiteralTypeUnion'])
     if (ast.child) {
       expect(ast.child.pairedNode).to.deep.equal(child.pairedNode)
-      expect(ast.child.objectPath).to.deep.equal(['simpleLiteralUnion','uni'])
-      expect(ast.child.valid).to.be.true
+      expect(ast.child.objectPath).to.deep.equal(['simpleLiteralTypeUnion','uni'])
+      expect(ast.child.valid).to.be.false
     } else {
       expect(ast.child).to.not.be.undefined
     }
+  })
+})
+
+describe('abstract syntax tree (nullable `?` property)', () => {
+  let project: Project
+  let sourceFile: SourceFile
+  let declaration: ExportedDeclarations[] | undefined
+
+  before((done) => {
+    project = new Project({
+      tsConfigFilePath: "./test/fixtures/simple-types/tsconfig.json"
+    });
+    sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
+    declaration = sourceFile.getExportedDeclarations().get('UndefinedType')
+    done()
+  })
+  it('declaration is not undefined', () => {
+    expect(declaration).to.not.be.undefined
+  })
+  it('check nullable property (null)', () => {
+    if (!declaration) return
+    const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.undefinedType, ['undefinedType'])
+    ast.validateDescendants()
+    expect(ast.pairedNode).to.equal(fixtureObjSimple.undefinedType)
+    expect(ast.objectPath).to.deep.equal(['undefinedType'])
+    declaration[0].getChildrenOfKind(SyntaxKind.PropertySignature).map((p) => {
+      const prop = p.getFirstChild()
+      if (prop) {
+        const propName = prop.getText()
+        const child = new AbstractSyntaxTree(p, (fixtureObjSimple.undefinedType as any)[propName], ['undefinedType', propName])
+        child.validateDescendants()
+        expect(child.pairedNode).to.equal((fixtureObjSimple.undefinedType as any)[propName])
+        expect(child.objectPath).to.deep.equal(['undefinedType', propName])
+        expect(child.valid).to.be.true
+      }
+    })
+  })
+  it('check nullable property (undefined)', () => {
+    if (!declaration) return
+    const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, {}, ['undefinedType'])
+    ast.validateDescendants()
+    expect(ast.objectPath).to.deep.equal(['undefinedType'])
+    declaration[0].getChildrenOfKind(SyntaxKind.PropertySignature).map((p) => {
+      const prop = p.getFirstChild()
+      if (prop) {
+        const propName = prop.getText()
+        const child = new AbstractSyntaxTree(p, ({} as any)[propName], ['undefinedType', propName])
+        child.validateDescendants()
+        expect(child.pairedNode).to.equal(({} as any)[propName])
+        expect(child.objectPath).to.deep.equal(['undefinedType', propName])
+        expect(child.valid).to.be.true
+      }
+    })
   })
 })

@@ -64,23 +64,17 @@ export class AbstractSyntaxTree {
         })
       } else if (node instanceof PropertySignature) {
         const type = node.getType()
-        console.log(node.getFullText(),type.getText(),'NULLABLE==============',node.getType().isNullable())
-        console.log('bool?=',type.isBoolean())
         if (node.getFirstChildByKind(SyntaxKind.QuestionToken)) {
           if (this.pairedNode === null || this.pairedNode === undefined) {
             this._valid = true
-            console.log(this.objectPath, 'valid!!!!!!')
             return true
           }
         }
         const checkResult = this.checkType(type, this.pairedNode)
         if (checkResult) {
           this._valid = true
-          console.log(this.objectPath, 'valid!!!!!!')
           return true
         }
-
-        console.log("!!!!!!!!!!!!!!!!! NO HOOK !!!!!!!!!!!!!!!!!!!!!")
 
         // const typeReferenceNode = node.getChildrenOfKind(SyntaxKind.TypeReference)
         // if (typeReferenceNode) {
@@ -108,16 +102,22 @@ export class AbstractSyntaxTree {
       '| stringLiteral:',type.isStringLiteral(),
       '| booleanLiteral:',type.isBooleanLiteral(),
     )
-    if ((type.isNumber() || type.isNumberLiteral()) && typeof value === 'number') {
+    if (type.isNumber() && typeof value === 'number') {
       return true
     }
     else if (type.isString() && typeof value === 'string') {
       return true
     }
-    else if ((type.isBoolean() || type.isBooleanLiteral()) && typeof value === 'boolean') {
+    else if (type.isBoolean() && typeof value === 'boolean') {
+      return true
+    }
+    else if (type.isNumberLiteral() && Number(type.getText()) === value) {
       return true
     }
     else if (type.isStringLiteral() && type.getText() === value) {
+      return true
+    }
+    else if (type.isBooleanLiteral() && (type.getText() === 'true') === value) {
       return true
     }
     else if (unionTypes) {

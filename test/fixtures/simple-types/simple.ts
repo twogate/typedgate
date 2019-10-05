@@ -35,3 +35,14 @@ export interface SimpleLiteralUnion {
 export interface SimpleLiteralTypeUnion {
   uni: LiteralUnionType;
 }
+
+// @TG:path .undefinedType
+export interface UndefinedType {
+  undefNumber?: number;
+  undefString?: string;
+  undefBoolean?: boolean;
+  undefUnion?: string | number;
+  undefTypeUnion?: UnionType;
+  undefLiteralUnion?: 'this is a literal' | true | 114514.1919;
+  undefLiteralTypeUnion?: SimpleLiteralTypeUnion;
+}
