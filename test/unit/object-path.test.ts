@@ -47,6 +47,20 @@ const fixtureObj = {
   l0prop3: 123
 }
 
+const fixtureArray1 = [
+  { num: 1, str: "yeah" },
+  { num: 2, str: "ehehe~" },
+  { num: 3, str: "Doki Doki" },
+]
+
+const fixtureArrayObj1 = {
+  arrayOfObj: [
+    { num: 1, str: "yeah" },
+    { num: 2, str: "ehehe~" },
+    { num: 3, str: "Doki Doki" },
+  ]
+}
+
 describe('object-path traverse', () => {
   it('root', () => {
     const op = new ObjectPath('.')
@@ -83,3 +97,17 @@ describe('object-path toArray', () => {
   })
 })
 
+describe('array-path traverse', () => {
+  it('should be accessed: array-of-object', () => {
+    const op = new ObjectPath('.[].str')
+    expect(op.traverse(fixtureArray1)).to.deep.equal(["yeah","ehehe~","Doki Doki"])
+  })
+  it('should be accessed: object contains array-of-object (root)', () => {
+    const op = new ObjectPath('.arrayOfObj[]')
+    expect(op.traverse(fixtureArrayObj1)).to.deep.equal(fixtureArrayObj1.arrayOfObj)
+  })
+  it('should be accessed: object contains array-of-object (property)', () => {
+    const op = new ObjectPath('.arrayOfObj[].num')
+    expect(op.traverse(fixtureArrayObj1)).to.deep.equal([1,2,3])
+  })
+})
