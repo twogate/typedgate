@@ -5,9 +5,11 @@
 
 import { ExportedDeclarations, InterfaceDeclaration, PropertySignature, Type, ArrayTypeNode } from "ts-morph"
 import { SyntaxKind } from "typescript"
-import { ObjectPath } from './object-path'
+import { ObjectPath, ObjectPathIdentifier } from './object-path'
+import { TypedgateError } from './typedgate-error'
 
 export type LeafType = 'boolean' | 'number' | 'string' | 'null';
+
 
 interface ILeafNode {
   type: string,
@@ -21,13 +23,16 @@ export class AbstractSyntaxTree {
   }
   private propName?: string
   private type?: string
+  private children?: | AbstractSyntaxTree[]
 
     constructor(
       public node: InterfaceDeclaration | PropertySignature | LeafType,
       public pairedNode: any,
-      public objectPath: Array<string|number>,
-      public child?: AbstractSyntaxTree
-    ) { }
+      public objectPath: ObjectPathIdentifier,
+      public child?: AbstractSyntaxTree,
+    ) {
+
+    }
 
     public reconstruct() {
       this.validateDescendants()
@@ -38,16 +43,35 @@ export class AbstractSyntaxTree {
 
       const node = this.node
       if (node instanceof InterfaceDeclaration) {
-        node.getProperties().map((m) => {
+        console.log((this.node as InterfaceDeclaration).getName())
+        console.log("INTERFACE DECLARA--------------------", this.objectPath, this.propName)
+        this._valid = node.getProperties().every((m) => {
           const prop = m.getSymbol()  // IFのプロパティ
           this.propName = m.getName()
+
           this.type = m.getType().getText()
-          this.child = new AbstractSyntaxTree(
-            m,
-            new ObjectPath([this.propName]).traverse(this.pairedNode),
-            this.objectPath.concat([this.propName]))
-          this.child.validateDescendants()
+          if (this.isIterableArray()) {
+            console.log("EMPTY ARRAY!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+            this.children = this.pairedNode.map((el: any, idx: number) => {
+              const newPath = this.objectPath.slice(0, -1).concat(idx)
+              const child = new AbstractSyntaxTree(
+                this.node,
+                el,
+                newPath)
+              return child
+            })
+            if (this.children)
+              return this.children.every((c) => c.validateDescendants())
+          } else {
+            this.child = new AbstractSyntaxTree(
+              m,
+              new ObjectPath([this.propName]).traverse(this.pairedNode),
+              this.objectPath.concat([this.propName]))
+            return this.child.validateDescendants()
+          }
         })
+        return this._valid
       } else if (node instanceof PropertySignature) {
         const type = node.getType()
         if (node.getFirstChildByKind(SyntaxKind.QuestionToken)) {
@@ -77,6 +101,14 @@ export class AbstractSyntaxTree {
 
       }
     }
+
+    private isIterableArray() {
+      const currentObjectPath = this.objectPath[this.objectPath.length - 1]
+      return this.objectPath &&
+             currentObjectPath instanceof Array &&
+             currentObjectPath.length === 0
+    }
+
   private checkType(type: Type, value: any) {
     const unionTypes = type.getUnionTypes()
     console.log('checkType: type=',type.getText(),' | value=',value)
@@ -87,7 +119,8 @@ export class AbstractSyntaxTree {
       '| numberLiteral:',type.isNumberLiteral(),
       '| stringLiteral:',type.isStringLiteral(),
       '| booleanLiteral:',type.isBooleanLiteral(),
-    )
+      '| interface:',type.isInterface(),
+      '| array',type.isArray()    )
     if (type.isNumber() && typeof value === 'number') {
       return true
     }
@@ -108,32 +141,18 @@ export class AbstractSyntaxTree {
     }
     else if (type.isArray()) {
       const arrayNode = (this.node as PropertySignature).getChildrenOfKind(SyntaxKind.ArrayType)
-      console.log("YEAH>>>>>>>>>>>>>>>", type.getArrayElementType())
       const elType = type.getArrayElementType()
-      if (elType)
-      console.log(
-        'number:',elType.isNumber(),
-        '| string:',elType.isString(),
-        '| boolean:',elType.isBoolean(),
-        '| numberLiteral:',elType.isNumberLiteral(),
-        '| stringLiteral:',elType.isStringLiteral(),
-        '| booleanLiteral:',elType.isBooleanLiteral(),
-      )
       arrayNode.map((a) => {
         console.log('MAPPING:', a.getText())
       })
       if (elType) {
-        const result = value.every((v: any) => {
+        this._valid = value.every((v: any) => {
           return this.checkType(elType, v)
         })
-        if (result) {
-          console.log('TRUE!!!!!!!!!')
-          this._valid = true
-          return true
-        }
+       return this._valid
       }
     }
-    else if (unionTypes) {
+    else if (unionTypes && unionTypes.length > 0) {
       return unionTypes.some((t) => {
         const checkResult = this.checkType(t, value)
         console.log('checking union:',t.getText(), value, checkResult)
@@ -142,12 +161,34 @@ export class AbstractSyntaxTree {
         }
         return false
       })
-      // console.log(resultMap)
-      // if (resultMap.some(r => r === true)) {
-      //   this._valid = true
-      //   console.log(this.objectPath, 'valid!!!!!!')
-      //   return true
-      // }
+    }
+    else if (type.isInterface()) {
+      const _node = (this.node as InterfaceDeclaration)
+      const c = _node.getLastChildByKind(SyntaxKind.Identifier)
+      if (c && c) {
+        console.log(c.getSymbol())
+//        console.log("IDEN:",c.getText())
+      //console.log(c.getDefinitionNodes())
+      const definitionNodes = _node.findReferences()
+      definitionNodes.map((n) => {
+  //      console.log("REF:", n.getReferences())
+      })
+      // this.child = new AbstractSyntaxTree(
+      //   c,
+      //   new ObjectPath([this.propName]).traverse(this.pairedNode),
+      //   this.objectPath.concat([this.propName]))
+      // this.child.validateDescendants()
+      }
+      this._valid=true
+      return true
+    }
+    else if (value instanceof Array) {
+      console.log("ARRRRRRRRRRRRRRRRR")
+    }
+    else {
+      console.log('Skipping not supported type')
+      console.log((this.node as InterfaceDeclaration).getText())
+      console.log(this.objectPath,this.pairedNode)
     }
     return false
   }

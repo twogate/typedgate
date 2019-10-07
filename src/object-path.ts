@@ -4,12 +4,14 @@
  */
 import { TypedgateError } from './typedgate-error'
 
+export type ObjectPathIdentifier = Array<string|number|undefined[]>
+
 export class ObjectPath {
   public static toArray(pathStr: string) {
     const arrayRex = new RegExp(/(.+)\[(\d+)\]$/)
     const emptyArrayRex = new RegExp(/(.*)\[\]$/)
     const splited = pathStr.split('.')
-    const res = splited.reduce((acc: Array<string|number|never[]>, r) => {
+    const res = splited.reduce((acc: ObjectPathIdentifier, r) => {
       const arrRex = r.match(arrayRex)
       const emptyArrRex = r.match(emptyArrayRex)
       if (arrRex) {
@@ -24,14 +26,14 @@ export class ObjectPath {
         acc.push(r)
       }
       return acc
-    }, [] as Array<string|number|never[]>)
+    }, [] as ObjectPathIdentifier)
     console.log(res)
     return res
   }
 
-  public path: Array<string|number|never[]>
+  public path: ObjectPathIdentifier
 
-  constructor (public pathArg: string|Array<string|number|never[]>) {
+  constructor (public pathArg: string|ObjectPathIdentifier) {
     if (Array.isArray(pathArg)) {
       this.path = pathArg
     } else if (typeof pathArg === 'string') {

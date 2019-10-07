@@ -24,6 +24,7 @@ export class InterfaceDefinition {
   private sourceFile: SourceFile
   private targetData: any
   private typesDict?: { [key:string]: ITypesDictionary }
+  private asts?: AbstractSyntaxTree[]
 
   constructor(opts: IInterfaceDefinitionArgument) {
     const project = new Project({
@@ -34,39 +35,7 @@ export class InterfaceDefinition {
   }
 
   public compareToTarget() {
-//    this.buildTypesDictionary()
     this.buildComparisonTree()
-  }
-
-  public generatePossibleValuesForUnion(node: ExportedDeclarations) {
-          //console.log(d.get)
-          node.getChildrenOfKind(SyntaxKind.UnionType).map((u) => {
-            //console.log(u)
-            console.log(u.getChildren)
-          })
-          // d.getChildren().map((c) => {
-          //   console.log(c.getKindName())
-          // })
-          // this.typesDict[typeName] = {
-          //   typeName: typeName,
-          //   possibleValue: [],
-          // }
-  }
-
-  public buildTypesDictionary() {
-    for (const [name, declarations] of this.sourceFile.getExportedDeclarations()) {
-      const ast = declarations.forEach((d) => {
-        const typeName = d.getType().getText()
-        if (d.getType().isUnion()) {
-          //console.log(d.getSymbol())
-          const symbol = d.getSymbol()
-          if (symbol) {
-            console.log(symbol.getDeclarations())
-          }
-          this.generatePossibleValuesForUnion(d)
-        }
-      })
-    }
   }
 
   public buildComparisonTree() {
@@ -114,8 +83,8 @@ export class InterfaceDefinition {
         asts.push(ast)
       }
     }
-    console.log(asts)
-    asts.map((ast) => ast.validateDescendants())
-    console.log(asts)
+    const results = asts.every((ast) => ast.validateDescendants())
+    console.log(results)
+    return results
   }
 }
