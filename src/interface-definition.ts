@@ -17,12 +17,13 @@ interface IInterfaceDefinitionArgument {
 
 export interface IValidationResult {
   valid: boolean,
-//  failedObjectPaths: ObjectPathIdentifier[],
+  asts?: AbstractSyntaxTree[]
 }
 
 export class InterfaceDefinition {
   private sourceFile: SourceFile
   private targetData: any
+  private asts?: AbstractSyntaxTree[]
 
   constructor(opts: IInterfaceDefinitionArgument) {
     const project = new Project({
@@ -36,6 +37,7 @@ export class InterfaceDefinition {
     const result = this.buildComparisonTree()
     return {
       valid: result,
+      asts: this.asts,
     }
   }
 
@@ -85,6 +87,7 @@ export class InterfaceDefinition {
       }
     }
     const results = asts.every((ast) => ast.validateDescendants())
+    this.asts = asts
     return results
   }
 }

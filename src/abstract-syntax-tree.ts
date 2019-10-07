@@ -3,13 +3,10 @@
  * Keiya Chinen @ TwoGate inc.
  */
 
-import { ExportedDeclarations, InterfaceDeclaration, PropertySignature, Type, ArrayTypeNode } from "ts-morph"
+import { ExportedDeclarations, InterfaceDeclaration, PropertySignature, Type, ArrayTypeNode, NullLiteral, QuestionTokenableNode } from "ts-morph"
 import { SyntaxKind } from "typescript"
 import { ObjectPath, ObjectPathIdentifier } from './object-path'
 import { TypedgateError } from './typedgate-error'
-
-export type LeafType = 'boolean' | 'number' | 'string' | 'null';
-
 
 interface ILeafNode {
   type: string,
@@ -23,10 +20,10 @@ export class AbstractSyntaxTree {
   }
   private propName?: string
   private type?: string
-  private children?: | AbstractSyntaxTree[]
+  public children?: AbstractSyntaxTree[]
 
     constructor(
-      public node: InterfaceDeclaration | PropertySignature | LeafType,
+      public node: InterfaceDeclaration | PropertySignature,
       public pairedNode: any,
       public objectPath: ObjectPathIdentifier,
       public child?: AbstractSyntaxTree,
@@ -68,7 +65,7 @@ export class AbstractSyntaxTree {
         return this._valid
       } else if (node instanceof PropertySignature) {
         const type = node.getType()
-        if (node.getFirstChildByKind(SyntaxKind.QuestionToken)) {
+        if (node.hasQuestionToken()) {
           if (this.pairedNode === null || this.pairedNode === undefined) {
             this._valid = true
             return true
@@ -79,20 +76,6 @@ export class AbstractSyntaxTree {
           this._valid = true
           return true
         }
-
-        // const typeReferenceNode = node.getChildrenOfKind(SyntaxKind.TypeReference)
-        // if (typeReferenceNode) {
-        //   typeReferenceNode.map((t) => {
-        //     if (t.getType().isUnion()) {
-        //       const possibleValues = t.getType().getUnionTypes().map((t) => eval(t.getText()))
-        //       if (possibleValues.includes(this.pairedNode)) {
-        //         this._valid = true
-        //         console.log(this.objectPath, 'valid!!!!!!')
-        //       }
-        //     }
-        //   })
-        // }
-
       }
     }
 
@@ -105,7 +88,16 @@ export class AbstractSyntaxTree {
 
   private checkType(type: Type, value: any) {
     const unionTypes = type.getUnionTypes()
-    if (type.isNumber() && typeof value === 'number') {
+    if (type.isAny()) {
+      return true
+    }
+    else if (value === null) { // currently, allow null types
+      return true
+    }
+    else if (type.isNull() && value === null) {
+      return true
+    }
+    else if (type.isNumber() && typeof value === 'number') {
       return true
     }
     else if (type.isString() && typeof value === 'string') {
@@ -165,9 +157,9 @@ export class AbstractSyntaxTree {
       console.log("ARRRRRRRRRRRRRRRRR")
     }
     else {
-      console.log('Skipping not supported type')
-      console.log((this.node as InterfaceDeclaration).getText())
-      console.log(this.objectPath,this.pairedNode)
+      //console.log('Skipping not supported type')
+      //console.log((this.node as InterfaceDeclaration).getText())
+      //console.log(this.objectPath,this.pairedNode)
     }
     return false
   }

@@ -32,6 +32,12 @@ const fixtureObjSimple = {
     "undefTypeUnion": null,
     "undefLiteralUnion": null,
     "undefLiteralTypeUnion": null,
+  },
+  "simpleNull": {
+    "nullProp": null,
+  },
+  "nullableString": {
+    "nullableString": null,
   }
 }
 
@@ -86,12 +92,7 @@ describe('abstract syntax tree (simple string)', () => {
     } else {
       expect(ast.child).to.not.be.undefined
     }
-
-    // const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simple.text, ['simple.text'])
-    // const correctAST = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simple, ['simple'], child)
-    // console.log(correctAST)
   })
-
 })
 
 describe('abstract syntax tree (simple number)', () => {
@@ -534,4 +535,66 @@ describe('abstract syntax tree (nullable `?` property)', () => {
   })
 })
 
+describe('abstract syntax tree (simple null)', () => {
+  let project: Project
+  let sourceFile: SourceFile
+  let declaration: ExportedDeclarations[] | undefined
+
+  before((done) => {
+    project = new Project({
+      tsConfigFilePath: "./test/fixtures/simple-types/tsconfig.json"
+    });
+    sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
+    declaration = sourceFile.getExportedDeclarations().get('SimpleNull')
+    done()
+  })
+  it('check equality', () => {
+    if (!declaration) return
+    const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleNull, ['simpleNull'])
+    ast.validateDescendants()
+    const child = new AbstractSyntaxTree(declaration[0].getChildAtIndex(0) as PropertySignature, fixtureObjSimple.simpleNull.nullProp, ['simpleNull','nullProp'])
+    expect(ast.pairedNode).to.equal(fixtureObjSimple.simpleNull)
+    expect(ast.objectPath).to.deep.equal(['simpleNull'])
+    if (ast.child) {
+      expect(ast.child.pairedNode).to.deep.equal(child.pairedNode)
+      expect(ast.child.objectPath).to.deep.equal(['simpleNull','nullProp'])
+      expect(ast.child.valid).to.be.true
+    } else {
+      expect(ast.child).to.not.be.undefined
+    }
+  })
+})
+
+describe('abstract syntax tree (nullable string)', () => {
+  let project: Project
+  let sourceFile: SourceFile
+  let declaration: ExportedDeclarations[] | undefined
+
+  before((done) => {
+    project = new Project({
+      tsConfigFilePath: "./test/fixtures/simple-types/tsconfig.json"
+    });
+    sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/simple.ts");
+    declaration = sourceFile.getExportedDeclarations().get('NullableString')
+    done()
+  })
+  it('check nullable property (null)', () => {
+    if (!declaration) return
+    const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.nullableString, ['nullableString'])
+    ast.validateDescendants()
+    expect(ast.pairedNode).to.equal(fixtureObjSimple.nullableString)
+    expect(ast.objectPath).to.deep.equal(['nullableString'])
+    declaration[0].getChildrenOfKind(SyntaxKind.PropertySignature).map((p) => {
+      const prop = p.getFirstChild()
+      if (prop) {
+        const propName = prop.getText()
+        const child = new AbstractSyntaxTree(p, (fixtureObjSimple.nullableString as any)[propName], ['nullableString', propName])
+        child.validateDescendants()
+        expect(child.pairedNode).to.equal((fixtureObjSimple.nullableString as any)[propName])
+        expect(child.objectPath).to.deep.equal(['nullableString', propName])
+        expect(child.valid).to.be.true
+      }
+    })
+  })
+})
 
