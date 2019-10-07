@@ -6,7 +6,7 @@
  import { InterfaceDeclaration, Project, ProjectOptions, SourceFile, SyntaxKind, UnionTypeNode, ExportedDeclarations } from "ts-morph";
 import { AbstractSyntaxTree } from './abstract-syntax-tree'
 import { ControlComment } from './control-comment'
-import { ObjectPath } from './object-path'
+import { ObjectPath, ObjectPathIdentifier } from './object-path'
 import { TypedgateError } from './typedgate-error'
 
 interface IInterfaceDefinitionArgument {
@@ -15,16 +15,14 @@ interface IInterfaceDefinitionArgument {
   targetData: any
 }
 
-interface ITypesDictionary {
-  typeName: string,
-  possibleValue: Array<string|number|null>,
+export interface IValidationResult {
+  valid: boolean,
+//  failedObjectPaths: ObjectPathIdentifier[],
 }
 
 export class InterfaceDefinition {
   private sourceFile: SourceFile
   private targetData: any
-  private typesDict?: { [key:string]: ITypesDictionary }
-  private asts?: AbstractSyntaxTree[]
 
   constructor(opts: IInterfaceDefinitionArgument) {
     const project = new Project({
@@ -34,8 +32,11 @@ export class InterfaceDefinition {
     this.targetData = opts.targetData
   }
 
-  public compareToTarget() {
-    this.buildComparisonTree()
+  public compareToTarget():IValidationResult {
+    const result = this.buildComparisonTree()
+    return {
+      valid: result,
+    }
   }
 
   public buildComparisonTree() {
@@ -84,7 +85,6 @@ export class InterfaceDefinition {
       }
     }
     const results = asts.every((ast) => ast.validateDescendants())
-    console.log(results)
     return results
   }
 }

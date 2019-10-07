@@ -36,7 +36,15 @@ const fixtureObjArray = [
     num: 456,
   }
 ]
-
+const fixtureObjTabs = {
+  "tabs":{
+    "tabs":
+      {
+        "name":"official",
+        "text":"公式情報"
+      }
+  }
+}
 
 describe('interface-definition (exception test)', () => {
   let jsonData: any
@@ -87,6 +95,16 @@ describe('interface-definition', () => {
       },
       sourceFilePath: "./test/fixtures/array-types/interface.ts",
       targetData: fixtureObjArray
+    })
+    expect(interfaceDefinition.buildComparisonTree()).to.be.true
+  })
+  it('nested-types/tabs', () => {
+    const interfaceDefinition = new InterfaceDefinition({
+      project: {
+        tsConfigFilePath: "./test/fixtures/nested-types/tsconfig.json"
+      },
+      sourceFilePath: "./test/fixtures/nested-types/tabs.ts",
+      targetData: fixtureObjTabs
     })
     expect(interfaceDefinition.buildComparisonTree()).to.be.true
   })

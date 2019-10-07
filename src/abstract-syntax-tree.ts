@@ -39,20 +39,14 @@ export class AbstractSyntaxTree {
     }
 
     public validateDescendants() {
-      console.log("validateDescendants:", this.objectPath, this.pairedNode)
-
       const node = this.node
       if (node instanceof InterfaceDeclaration) {
-        console.log((this.node as InterfaceDeclaration).getName())
-        console.log("INTERFACE DECLARA--------------------", this.objectPath, this.propName)
         this._valid = node.getProperties().every((m) => {
           const prop = m.getSymbol()  // IFのプロパティ
           this.propName = m.getName()
 
           this.type = m.getType().getText()
           if (this.isIterableArray()) {
-            console.log("EMPTY ARRAY!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
             this.children = this.pairedNode.map((el: any, idx: number) => {
               const newPath = this.objectPath.slice(0, -1).concat(idx)
               const child = new AbstractSyntaxTree(
@@ -111,16 +105,6 @@ export class AbstractSyntaxTree {
 
   private checkType(type: Type, value: any) {
     const unionTypes = type.getUnionTypes()
-    console.log('checkType: type=',type.getText(),' | value=',value)
-    console.log(
-      'number:',type.isNumber(),
-      '| string:',type.isString(),
-      '| boolean:',type.isBoolean(),
-      '| numberLiteral:',type.isNumberLiteral(),
-      '| stringLiteral:',type.isStringLiteral(),
-      '| booleanLiteral:',type.isBooleanLiteral(),
-      '| interface:',type.isInterface(),
-      '| array',type.isArray()    )
     if (type.isNumber() && typeof value === 'number') {
       return true
     }
@@ -142,9 +126,6 @@ export class AbstractSyntaxTree {
     else if (type.isArray()) {
       const arrayNode = (this.node as PropertySignature).getChildrenOfKind(SyntaxKind.ArrayType)
       const elType = type.getArrayElementType()
-      arrayNode.map((a) => {
-        console.log('MAPPING:', a.getText())
-      })
       if (elType) {
         this._valid = value.every((v: any) => {
           return this.checkType(elType, v)
@@ -155,7 +136,6 @@ export class AbstractSyntaxTree {
     else if (unionTypes && unionTypes.length > 0) {
       return unionTypes.some((t) => {
         const checkResult = this.checkType(t, value)
-        console.log('checking union:',t.getText(), value, checkResult)
         if (checkResult) {
           return true
         }
@@ -166,7 +146,6 @@ export class AbstractSyntaxTree {
       const _node = (this.node as InterfaceDeclaration)
       const c = _node.getLastChildByKind(SyntaxKind.Identifier)
       if (c && c) {
-        console.log(c.getSymbol())
 //        console.log("IDEN:",c.getText())
       //console.log(c.getDefinitionNodes())
       const definitionNodes = _node.findReferences()

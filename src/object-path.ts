@@ -27,7 +27,6 @@ export class ObjectPath {
       }
       return acc
     }, [] as ObjectPathIdentifier)
-    console.log(res)
     return res
   }
 
