@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require ts-node/register --colors test/unit/**/*.ts",
+    "test": "mocha --require ts-node/register --colors test/unit/**/*.ts test/unit/*.ts",
     "dev": "ts-node src/index.ts",
     "coverage": "nyc npm run test",
     "lint": "tslint --format stylish 'src/**/*.ts{,x}'",
