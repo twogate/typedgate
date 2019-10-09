@@ -135,6 +135,23 @@ typedgate --tsconfig ./test/fixtures/car-types/tsconfig.json --src ./test/fixtur
 
 (You can use `npx` without installation as described in 'Installation' section)
 
+## Hint
+`--src` option can be take one single file. To validate multiple files, we recommend that you put a file like this:
+
+```typescript
+export * from './color-theme';
+export * from './general';
+export * from './advanced';
+export * from './tabs';
+// other exports ...
+```
+
+We assume this file is named `src/index.ts`. To validate these exported files, you can run this command:
+
+```
+typedgate --tsconfig path/to/tsconfig.json --src ./src/index.ts --json /path/to/something.json
+```
+
 ## Development
 ### Run TypedGate
 In `test/` directory, you can find various useful test cases to develop the TypedGate code.
