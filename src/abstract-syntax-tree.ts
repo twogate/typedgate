@@ -15,6 +15,7 @@ export class AbstractSyntaxTree {
     return this._valid
   }
   public children?: AbstractSyntaxTree[]
+  public verbose: boolean = false
 
     constructor(
       public node: InterfaceDeclaration | ClassDeclaration | PropertySignature | PropertyDeclaration,
@@ -27,9 +28,9 @@ export class AbstractSyntaxTree {
       this.validateDescendants()
     }
 
-    public validateDescendants(verbose: boolean = false): boolean {
+    public validateDescendants(): boolean {
       const node = this.node
-      if (verbose) {
+      if (this.verbose) {
         console.log(chalk.dim(this.objectPath.join('.')))
       }
       if (node instanceof InterfaceDeclaration || node instanceof ClassDeclaration) {

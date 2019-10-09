@@ -30,6 +30,7 @@ loadJson(options.json).then((data) => {
     sourceFilePath: options.src,
     targetData: data
   })
+  interfaceDefinition.verbose = options.verbose
   try {
     console.log(chalk.green("Validating..."))
     const result = interfaceDefinition.compareToTarget()

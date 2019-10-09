@@ -91,7 +91,10 @@ export class InterfaceDefinition {
         asts = asts.concat(ast)
       }
     }
-    const results = asts.map((ast) => ast.validateDescendants(this.verbose)).every((result) => result)
+    const results = asts.map((ast) => {
+      ast.verbose = this.verbose
+      ast.validateDescendants()
+    }).every((result) => result)
     this.asts = asts
     return results
   }
