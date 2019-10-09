@@ -93,7 +93,7 @@ export class InterfaceDefinition {
     }
     const results = asts.map((ast) => {
       ast.verbose = this.verbose
-      ast.validateDescendants()
+      return ast.validateDescendants()
     }).every((result) => result)
     this.asts = asts
     return results
