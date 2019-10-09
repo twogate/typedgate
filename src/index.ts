@@ -1,7 +1,6 @@
 import { loadJson } from './file-utils'
 import { InterfaceDefinition } from './interface-definition'
 import { ResultReport } from './result-report'
-import { config } from "./config";
 import chalk from 'chalk'
 import commandLineArgs from 'command-line-args'
 

@@ -1,9 +1,9 @@
 TypedGate "TG" - a JSON Type Validator without schemas
 ======================================================
 
-[![pipeline status](https://git.l.twogate.net/fanapp/crayon-types-validator/badges/master/pipeline.svg)](https://git.l.twogate.net/fanapp/crayon-types-validator/commits/master)
+TypedGate is a validator that compares TS interface/class definition to JSON.
 
-[![coverage report](https://git.l.twogate.net/fanapp/crayon-types-validator/badges/master/coverage.svg)](https://git.l.twogate.net/fanapp/crayon-types-validator/commits/master)
+![TypedGate Screenshot](docs/typedgate-screenshot.png)
 
 ## Checking your TypeScript codes of Interfaces / Classes with TypedGate
 ### Add ControlComment to your Interface/Class definitions

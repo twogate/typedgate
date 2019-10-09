@@ -2,7 +2,9 @@
   "name": "typedgate",
   "version": "0.0.1",
   "description": "TypeScript-defined JSON validator",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "prepublish": "npm run build",
   "scripts": {
     "test": "mocha --require ts-node/register --colors test/unit/**/*.ts test/unit/*.ts",
     "build": "tsc",
@@ -12,10 +14,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.l.twogate.net:fanapp/crayon-types-validator.git"
+    "url": "https://github.com/twogate/typedgate.git"
   },
   "author": "",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/twogate/typedgate/issues"
+  },
   "dependencies": {
     "@types/command-line-args": "^5.0.0",
     "chalk": "^2.4.2",
