@@ -46,6 +46,23 @@ const fixtureObjTabs = {
   }
 }
 
+const importTest = {
+  "entrance":{
+    "transfer":false,
+    "transferText":null,
+    "entranceImage":{
+      "assetManagerReferenceImageId": "12313123123",
+      "defaultContent": {
+        "originalName": "9999.jpg",
+        "contentType": 123232,
+        "url": "http://asdfasdf",
+      },
+      "content2x": null,
+      "content3x": null,
+    }
+  }
+}
+
 describe('interface-definition (exception test)', () => {
   let jsonData: any
 
@@ -107,5 +124,15 @@ describe('interface-definition', () => {
       targetData: fixtureObjTabs
     })
     expect(interfaceDefinition.buildComparisonTree()).to.be.true
+  })
+  it('nested-types/import', () => {
+    const interfaceDefinition = new InterfaceDefinition({
+      project: {
+        tsConfigFilePath: "./test/fixtures/nested-types/tsconfig.json"
+      },
+      sourceFilePath: "./test/fixtures/nested-types/import.fixture.ts",
+      targetData: importTest
+    })
+    expect(interfaceDefinition.buildComparisonTree()).to.be.false
   })
 })

@@ -1,25 +1,34 @@
-import { Project, StructureKind } from "ts-morph";
 import { loadJson } from './file-utils'
-
 import { InterfaceDefinition } from './interface-definition'
-
 import { ResultReport } from './result-report'
-
+import { config } from "./config";
 import chalk from 'chalk'
+import commandLineArgs from 'command-line-args'
 
-loadJson('./test/fixtures/app-config.json').then((data) => {
-//  loadJson("./test/fixtures/car-types/engine.json").then((data) => {
+
+const optionDefinitions = [
+  { name: 'verbose', alias: 'v', type: Boolean },
+  { name: 'tsconfig', alias: 't', type: String },
+  { name: 'src', alias: 's', type: String },
+  { name: 'json', alias: 'j', type: String },
+]
+
+const options = commandLineArgs(optionDefinitions)
+
+if (!options.src || !options.tsconfig || !options.json) {
+  throw new Error('ArgumentError')
+}
+
+loadJson(options.json).then((data) => {
   if (typeof data !== 'object' && data === null) {
     throw new Error('Root of provided JSON structure is not an object.')
   }
   console.log(chalk.green("Loading project..."))
   const interfaceDefinition = new InterfaceDefinition({
     project: {
-      tsConfigFilePath: "../crayon-types/tsconfig.json"
-      //tsConfigFilePath: "./test/fixtures/car-types/tsconfig.json"
+      tsConfigFilePath: options.tsconfig
     },
-    sourceFilePath: "../crayon-types/src/index.ts",
-    //sourceFilePath: "./test/fixtures/car-types/engine.ts",
+    sourceFilePath: options.src,
     targetData: data
   })
   try {
@@ -33,15 +42,18 @@ loadJson('./test/fixtures/app-config.json').then((data) => {
         const report = new ResultReport(result.asts).generateReport()
         console.error(chalk.bold(`=== Validation Detail ===`))
         report.forEach((r) => {
-          console.error("Object Path: ", chalk.yellowBright(r.objectPathIdentifier.join('.')))
+          console.error("JSON Path  : ", chalk.yellowBright(r.objectPathIdentifier.join('.')))
           console.error("TS FilePath: ", `${chalk.yellow(r.sourceFileName)}:${chalk.green(r.sourceFilePos.line.toString())}:${r.sourceFilePos.column.toString()}`)
-          // onsole.error(chalk.dim(r.text))
-          // console.error(chalk.dim(JSON.stringify(r.objectValue, null, 2)))
+          if (options.verbose) {
+            console.error(chalk.dim(r.text))
+            console.error(chalk.dim(JSON.stringify(r.objectValue, null, 2)))
+          }
         })
         console.log(`\n${report.length} error(s) found`)
       }
       console.error(chalk.bold(`=== Validation Result ===`))
       console.error(chalk.redBright.bold("Not Valid"))
+      process.exitCode = 1
     }
   } catch (e) {
     console.error("Error:", chalk.redBright.bold(e.toString()))

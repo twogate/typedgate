@@ -3,7 +3,7 @@
  * Keiya Chinen @ TwoGate inc.
  */
 
- import { InterfaceDeclaration, Project, ProjectOptions, SourceFile, SyntaxKind, UnionTypeNode, ExportedDeclarations } from "ts-morph";
+ import { InterfaceDeclaration, ClassDeclaration, Project, ProjectOptions, SourceFile, SyntaxKind, UnionTypeNode, ExportedDeclarations } from "ts-morph";
 import { AbstractSyntaxTree } from './abstract-syntax-tree'
 import { ControlComment } from './control-comment'
 import { ObjectPath, ObjectPathIdentifier } from './object-path'
@@ -24,6 +24,7 @@ export class InterfaceDefinition {
   private sourceFile: SourceFile
   private targetData: any
   private asts?: AbstractSyntaxTree[]
+  public verbose: boolean = false
 
   constructor(opts: IInterfaceDefinitionArgument) {
     const project = new Project({
@@ -42,7 +43,7 @@ export class InterfaceDefinition {
   }
 
   public buildComparisonTree() {
-    const asts = []
+    let asts: AbstractSyntaxTree[] = []
     for (const [name, declarations] of this.sourceFile.getExportedDeclarations()) {
       const ast = declarations.reduce((r1, d) => {
         const entryDeclarations = d.getLeadingCommentRanges().reduce((r2, c) => {
@@ -62,6 +63,8 @@ export class InterfaceDefinition {
                   } else {
                     if (d.getType().isInterface()) {
                       r2.push(new AbstractSyntaxTree(d as InterfaceDeclaration, resolvedObj, op.path))
+                    } else if (d.getType().isClass()) {
+                      r2.push(new AbstractSyntaxTree(d as ClassDeclaration, resolvedObj, op.path))
                     }
                   }
               }
@@ -77,17 +80,18 @@ export class InterfaceDefinition {
             throw e
           }
         }
-        }, [] as AbstractSyntaxTree[])[0]
+        }, [] as AbstractSyntaxTree[])
+        //console.log(entryDeclarations)
         if (entryDeclarations) {
-          r1.push(entryDeclarations)
+          r1 = r1.concat(entryDeclarations)
         }
         return r1
-      }, [] as AbstractSyntaxTree[])[0]
+      }, [] as AbstractSyntaxTree[])
       if (ast) {
-        asts.push(ast)
+        asts = asts.concat(ast)
       }
     }
-    const results = asts.every((ast) => ast.validateDescendants())
+    const results = asts.map((ast) => ast.validateDescendants(this.verbose)).every((result) => result)
     this.asts = asts
     return results
   }

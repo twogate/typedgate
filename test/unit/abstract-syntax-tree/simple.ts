@@ -38,6 +38,15 @@ const fixtureObjSimple = {
   },
   "nullableString": {
     "nullableString": null,
+  },
+  "simpleClass": {
+    "text": "",
+    "num": 0.00001,
+    "bool": true,
+    "uni1": "simple union check!",
+    "uni2": "true",
+    "uni3": 'this is a literal',
+    "uni4": true,
   }
 }
 
@@ -598,3 +607,35 @@ describe('abstract syntax tree (nullable string)', () => {
   })
 })
 
+describe('abstract syntax tree (class)', () => {
+  let project: Project
+  let sourceFile: SourceFile
+  let declaration: ExportedDeclarations[] | undefined
+
+  before((done) => {
+    project = new Project({
+      tsConfigFilePath: "./test/fixtures/simple-types/tsconfig.json"
+    });
+    sourceFile = project.getSourceFileOrThrow("./test/fixtures/simple-types/class.fixture.ts");
+    declaration = sourceFile.getExportedDeclarations().get('SimpleClass')
+    done()
+  })
+  it('should success validation', () => {
+    if (!declaration) return
+    const ast = new AbstractSyntaxTree(declaration[0] as InterfaceDeclaration, fixtureObjSimple.simpleClass, ['simpleClass'])
+    ast.validateDescendants()
+    expect(ast.pairedNode).to.equal(fixtureObjSimple.simpleClass)
+    expect(ast.objectPath).to.deep.equal(['simpleClass'])
+    declaration[0].getChildrenOfKind(SyntaxKind.PropertyDeclaration).map((p) => {
+      const prop = p.getFirstChild()
+      if (prop) {
+        const propName = prop.getText()
+        const child = new AbstractSyntaxTree(p, (fixtureObjSimple.simpleClass as any)[propName], ['simpleClass', propName])
+        child.validateDescendants()
+        expect(child.pairedNode).to.equal((fixtureObjSimple.simpleClass as any)[propName])
+        expect(child.objectPath).to.deep.equal(['simpleClass', propName])
+        expect(child.valid).to.be.true
+      }
+    })
+  })
+})

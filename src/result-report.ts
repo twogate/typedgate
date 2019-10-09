@@ -22,7 +22,7 @@ export class ResultReport {
 
   public generateReport() {
     this.asts.map((ast) => this.traverseAST(ast))
-    const results = this.results.filter((ast) => !ast.valid)
+    const results = this.results.filter((ast) => ast.valid === false)
     return results
   }
 
