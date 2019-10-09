@@ -69,8 +69,9 @@ export class InterfaceDefinition {
             return r2
         } catch (e) {
           if (e instanceof TypedgateError) {
-            e.interfaceSourcePath = c.getSourceFile().compilerNode.fileName
-            e.interfacePos = c.getPos()
+            e.sourceFileName = c.getSourceFile().getFilePath()
+            e.sourceFilePos = c.getSourceFile().getLineAndColumnAtPos(c.getPos())
+            c.getSourceFile()
             throw e
           } else {
             throw e

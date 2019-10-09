@@ -3,13 +3,17 @@ export class TypedgateError extends Error {
 
   constructor(
     public message: string,
-    public interfaceSourcePath?: string,
-    public interfacePos?: number
+    public sourceFileName?: string,
+    public sourceFilePos?: {
+      line: number;
+      column: number;
+    }
   ) {
     super(message)
   }
 
   public toString() {
-    return `${this.name}: ${this.message} at ${this.interfaceSourcePath}, position ${this.interfacePos}`
+    const pos = this.sourceFilePos ? `:${this.sourceFilePos.line}:${this.sourceFilePos.column}` : ''
+    return `${this.name}: ${this.message} at ${this.sourceFileName}${pos}`
   }
 }

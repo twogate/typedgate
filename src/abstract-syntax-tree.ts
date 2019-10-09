@@ -23,7 +23,7 @@ export class AbstractSyntaxTree {
   public children?: AbstractSyntaxTree[]
 
     constructor(
-      public node: InterfaceDeclaration | PropertySignature | TypeNode,
+      public node: InterfaceDeclaration | PropertySignature,
       public pairedNode: any,
       public objectPath: ObjectPathIdentifier,
       public child?: AbstractSyntaxTree,
@@ -74,32 +74,21 @@ export class AbstractSyntaxTree {
           this._valid = true
           return true
         }
-        // if (type.isObject()) {
-        //   const typeNode = node.getTypeNodeOrThrow()
-        //   console.log(typeNode.getKindName())
-        //   console.log(typeNode.getType().getProperties())
-        //   const propName = node.getName()
-        //   this.child = new AbstractSyntaxTree(
-        //     typeNode,
-        //     new ObjectPath([propName]).traverse(this.pairedNode),
-        //     this.objectPath.concat(propName))
-        //   return this.child.validateDescendants()
-        // }
-        // if (type.isAnonymous() && type.isObject()) {
-        //   return type.getProperties().every((prop) => {
-        //     const decl = prop.getDeclarations()[0]
-        //     if (decl) {
-        //       console.log(decl.getType().getText(), prop.getName(), this.pairedNode[prop.getName()])
-        //       this.child = new AbstractSyntaxTree(
+        // if (type.isObject() && (type.isAnonymous() || type.isInterface())) {
+        //   const checkResult = type.getProperties().every((prop) => {
+        //     const decl = prop.getDeclarations()[0] as PropertySignature
+        //     const propName = prop.getName()
+        //     this.child = new AbstractSyntaxTree(
         //       decl,
         //       new ObjectPath([propName]).traverse(this.pairedNode),
-        //       this.objectPath.concat(propName))
-        //       return this.checkType(decl.getType(), this.pairedNode[prop.getName()])
-
-        //     }
-        //     return false
+        //       this.objectPath.concat([propName]))
+        //     return this.child.validateDescendants()
         //   })
-        //}
+        //   if (checkResult) {
+        //     this._valid = true
+        //     return true
+        //   }
+        // }
       }
       return this._valid
     }
@@ -139,6 +128,7 @@ export class AbstractSyntaxTree {
     //   "\nisUnion",type.isUnion(),
     //   "\nisUnionOrIntersection",type.isUnionOrIntersection(),
     //   "\nisUnknown",type.isUnknown(),
+    //   "\n",value
     // )
     const unionTypes = type.getUnionTypes()
     if (type.isAny()) {
@@ -169,7 +159,6 @@ export class AbstractSyntaxTree {
       return true
     }
     else if (type.isArray()) {
-      const arrayNode = (this.node as PropertySignature).getChildrenOfKind(SyntaxKind.ArrayType)
       const elType = type.getArrayElementTypeOrThrow()
       return value.every((v: any) => {
         return this.checkType(elType, v)
@@ -184,19 +173,17 @@ export class AbstractSyntaxTree {
         return false
       })
     }
-    // else if (type.isInterface()) {
-    //   return true
-    // }
-    else if (type.isObject()) {
+    else if (type.isObject() && (type.isAnonymous() || type.isInterface())) {
       return type.getProperties().every((prop) => {
-        const decl = prop.getDeclarations()[0]
-        return this.checkType(decl.getType(), value[prop.getName()])
+        const decl = prop.getDeclarations()[0] as PropertySignature
+        const propName = prop.getName()
+
+        this.child = new AbstractSyntaxTree(
+          decl,
+          new ObjectPath([propName]).traverse(value),
+          this.objectPath.concat([propName]))
+        return this.child.validateDescendants()
       })
-    }
-    else {
-      //console.log('Skipping not supported type')
-      //console.log((this.node as InterfaceDeclaration).getText())
-      //console.log(this.objectPath,this.pairedNode)
     }
     return false
   }
