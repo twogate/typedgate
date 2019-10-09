@@ -5,6 +5,19 @@ TypedGate is a validator that compares TS interface/class definition to JSON.
 
 ![TypedGate Screenshot](docs/typedgate-screenshot.png)
 
+## Installation
+### Try now without installation (npx)
+You can use npx to use TypedGate without install:
+
+```bash
+npx typedgate --tsconfig ./tsconfig.json --src ./src/index.ts --json ./some-json-file.json
+```
+
+### Global install
+```bash
+npm install -g typedgate
+```
+
 ## Checking your TypeScript codes of Interfaces / Classes with TypedGate
 ### Add ControlComment to your Interface/Class definitions
 
@@ -120,6 +133,8 @@ To run TypedGate, you should specify path to project's tsconfig.json, path to so
 typedgate --tsconfig ./test/fixtures/car-types/tsconfig.json --src ./test/fixtures/car-types/engine.ts --json ./test/fixtures/car-types/engine.json
 ```
 
+(You can use `npx` without installation as described in 'Installation' section)
+
 ## Development
 ### Run TypedGate
 In `test/` directory, you can find various useful test cases to develop the TypedGate code.
@@ -134,3 +149,6 @@ npm run build && node dist/index.js -v --tsconfig ./test/fixtures/car-types/tsco
 ```
 npm run test
 ```
+
+### API
+We are planning to create an api that can be used by other node scripts.
