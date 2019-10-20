@@ -1,6 +1,7 @@
 TypedGate - a JSON Type Checker & Validator without schemas
 ===========================================================
-TypedGate is a JSON checker & validator tool without using any schemas but only requires typescript interface definitions and simple comments.
+TypedGate is a JSON checker & validator tool without using any schemas but **only requires typescript interface definitions and simple comments**.
+
 TypedGate compares typescript interface/class definition to JSON then output validation results.
 
 ![TypedGate Screenshot](docs/typedgate-screenshot.png)
