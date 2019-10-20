@@ -1,21 +1,25 @@
-TypedGate "TG" - a JSON Type Validator without schemas
-======================================================
-
-TypedGate is a validator that compares TS interface/class definition to JSON.
+TypedGate - a JSON Type Checker & Validator without schemas
+===========================================================
+TypedGate is a JSON checker & validator tool without using any schemas but only requires typescript interface definitions and simple comments.
+TypedGate compares typescript interface/class definition to JSON then output validation results.
 
 ![TypedGate Screenshot](docs/typedgate-screenshot.png)
 
 ## Installation
 ### Try now without installation (npx)
-You can use npx to use TypedGate without install:
+You can use npx to use TypedGate without installation:
 
 ```bash
 npx typedgate --tsconfig ./tsconfig.json --src ./src/index.ts --json ./some-json-file.json
 ```
 
-### Global install
+### Global installation
 ```bash
 npm install -g typedgate
+```
+
+```bash
+typedgate --tsconfig ./tsconfig.json --src ./src/index.ts --json ./some-json-file.json
 ```
 
 ## Checking your TypeScript codes of Interfaces / Classes with TypedGate
