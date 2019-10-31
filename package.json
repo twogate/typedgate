@@ -4,6 +4,9 @@
   "description": "TypeScript-defined JSON validator",
   "main": "dist/index.js",
   "bin": "bin/cli.js",
+  "files": [
+    "dist/cli.js"
+  ],
   "types": "dist/index.d.ts",
   "prepublish": "npm run build",
   "scripts": {

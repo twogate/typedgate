@@ -1,7 +1,7 @@
 import { AbstractSyntaxTree } from './abstract-syntax-tree'
 import { ObjectPath, ObjectPathIdentifier } from './object-path'
 
-interface IResult {
+export interface IResult {
   objectPathIdentifier: ObjectPathIdentifier,
   objectValue: any | null,
   sourceFileName: string,
