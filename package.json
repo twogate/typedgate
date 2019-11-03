@@ -1,6 +1,6 @@
 {
   "name": "typedgate",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "TypeScript-defined JSON validator",
   "main": "dist/index.js",
   "bin": "bin/cli.js",
