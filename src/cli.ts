@@ -4,12 +4,7 @@ import { ResultReport } from './result-report'
 import chalk from 'chalk'
 import commandLineArgs from 'command-line-args'
 
-// run as CLI tool
-if (typeof require !== 'undefined' && require.main === module) {
-  main()
-}
-
-export default function main() {
+(function() {
   const optionDefinitions = [
     { name: 'verbose', alias: 'v', type: Boolean },
     { name: 'tsconfig', alias: 't', type: String },
@@ -64,4 +59,4 @@ export default function main() {
       console.error("Error:", chalk.redBright.bold(e.toString()))
     }
   })
-}
+}())

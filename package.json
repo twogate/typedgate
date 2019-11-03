@@ -1,12 +1,9 @@
 {
   "name": "typedgate",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "TypeScript-defined JSON validator",
   "main": "dist/index.js",
   "bin": "bin/cli.js",
-  "files": [
-    "dist/cli.js"
-  ],
   "types": "dist/index.d.ts",
   "prepublish": "npm run build",
   "scripts": {
