@@ -9,7 +9,7 @@ describe('typedgate class (crayon-type)', () => {
 
   it('validation \'crayon-type\' should be false', async () => {
     const result = await tg.validateJsonFile('./test/fixtures/crayon-types/crayon-type.json')
-    console.log(result)
     expect(result).to.be.false
+    // TODO: check tg.validationResult
   })
 })

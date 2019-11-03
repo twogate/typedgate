@@ -2,9 +2,6 @@ import { loadJson } from './file-utils'
 import { InterfaceDefinition } from './interface-definition'
 import { IResult, ResultReport  } from './result-report'
 
-console.log(require)
-console.log(require.main)
-
 export class TypedGate {
   private _validationResult?: IResult[]
   get validationResult(): IResult[] | undefined {
@@ -39,3 +36,5 @@ export class TypedGate {
     }
   }
 }
+
+export { IResult as TypedGateResult }
