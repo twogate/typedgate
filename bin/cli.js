@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('typedgate')
+require('typedgate/dist/cli')

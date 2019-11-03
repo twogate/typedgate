@@ -67,7 +67,7 @@ describe('interface-definition (exception test)', () => {
   let jsonData: any
 
   before((done) => {
-    loadJson('./test/fixtures/app-config.json').then((res) => {
+    loadJson('./test/fixtures/crayon-types/crayon-type.json').then((res) => {
       jsonData = res
       done()
     })
